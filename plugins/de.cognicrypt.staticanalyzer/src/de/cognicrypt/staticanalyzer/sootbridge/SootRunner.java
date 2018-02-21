@@ -24,6 +24,7 @@ import crypto.rules.CryptSLRuleReader;
 import crypto.rules.StateNode;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.Utils;
+import de.cognicrypt.staticanalyzer.telemetry.TelemetryEvents;
 import ideal.debug.IDebugger;
 import ideal.debug.NullDebugger;
 import soot.G;
@@ -53,6 +54,7 @@ public class SootRunner {
 			runSoot(mainClass);
 		} catch (final Exception t) {
 			Activator.getDefault().logError(t);
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.SOOT_EXCEPTION, t);
 			return false;
 		}
 		return true;

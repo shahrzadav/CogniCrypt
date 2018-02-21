@@ -6,6 +6,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import de.cognicrypt.staticanalyzer.telemetry.Telemetry;
+import de.cognicrypt.staticanalyzer.telemetry.TelemetryEvents;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -16,6 +19,8 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	
+	private Telemetry telemetry;
 
 	/**
 	 * The constructor
@@ -25,12 +30,16 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
+		telemetry = new Telemetry();
 		Activator.plugin = this;
+		telemetry.sendEvent(TelemetryEvents.START);
 	}
 
 	@Override
 	public void stop(final BundleContext context) throws Exception {
+		telemetry.sendEvent(TelemetryEvents.STOP);
 		Activator.plugin = null;
+		telemetry = null;
 		super.stop(context);
 	}
 
@@ -72,5 +81,9 @@ public class Activator extends AbstractUIPlugin {
 
 	public void logInfo(final String message) {
 		log(IStatus.INFO, message, null);
+	}
+	
+	public Telemetry getTelemetry() {
+		return telemetry;
 	}
 }

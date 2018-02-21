@@ -16,6 +16,7 @@ import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.ui.IStartup;
 
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.telemetry.TelemetryEvents;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
@@ -37,9 +38,9 @@ public class StartupHandler implements IStartup {
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
 			Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
+			Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.POST_BUILD);
 			try {
 				final List<IJavaElement> changedJavaElements = new ArrayList<>();
-
 				event.getDelta().accept(delta -> {
 					switch (delta.getKind()) {
 						case IResourceDelta.ADDED:
@@ -92,15 +93,19 @@ public class StartupHandler implements IStartup {
 				if (ako.setUp(changedJavaElements.get(0))) {
 					if (ako.run()) {
 						Activator.getDefault().logInfo("Analysis has finished.");
+						Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.ANALYSIS_FINISHED);
 					} else {
 						Activator.getDefault().logInfo("Analysis has aborted.");
+						Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.ANALYSIS_ABORTED);
 					}
 				} else {
 					Activator.getDefault().logInfo("Analysis has been canceled due to erroneous setup.");
+					Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.ANALYSIS_ERROR_SETUP);
 				}
 
 			} catch (final CoreException e) {
 				Activator.getDefault().logError(e, "Internal error");
+				Activator.getDefault().getTelemetry().sendEvent(TelemetryEvents.ANALYSIS_INTERNAL_ERROR, e);
 			}
 		}
 
