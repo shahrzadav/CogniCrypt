@@ -82,16 +82,11 @@ public class TaskSelectionPage extends WizardPage {
 		gl.verticalSpacing = -6;
 		this.container.setLayout(gl);
 
-		
 		final GridData firstButton = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		
-		Button encryptionButton = new Button(container, SWT.WRAP);
 		Image encImage = loadImage(LOCK_IMAGE);
 		Image encImageInvert = loadImage(LOCK_IMAGE_INVERTED);
-		Rectangle encBounds = encImage.getBounds();
-		encryptionButton.setSize(encBounds.width, encBounds.width);
-		encryptionButton.setImage(encImage);
-		encryptionButton.setLayoutData(firstButton);
+		Button encryptionButton = createImageButton(container, encImage);
 		
 		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
 		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4);
@@ -99,26 +94,18 @@ public class TaskSelectionPage extends WizardPage {
 		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
 		
-		Button hashButton = new Button(container, SWT.WRAP);
 		Image hashImage = loadImage(KEY_IMAGE);
 		Image hashImageInvert = loadImage(KEY_IMAGE_INVERTED);
-		Rectangle hashBounds = hashImage.getBounds();
-		hashButton.setSize(hashBounds.width, hashBounds.width);
-		hashButton.setImage(hashImage);
 		
-		Button secChanButton = new Button(container, SWT.WRAP);
+		Button hashButton = createImageButton(container, hashImage);
+		
 		Image secChanImage = loadImage(WIFI_IMAGE);
 		Image secChanImageInvert = loadImage(WIFI_IMAGE_INVERTED);
-		Rectangle secChanBounds = secChanImage.getBounds();
-		secChanButton.setSize(secChanBounds.width, secChanBounds.width);
-		secChanButton.setImage(secChanImage);
+		Button secChanButton = createImageButton(container, secChanImage);
 		
-		Button crcButton = new Button(container, SWT.WRAP);
 		Image crcImage = loadImage(HAT_IMAGE);
 		Image crcImageInvert = loadImage(HAT_IMAGE_INVERTED);
-		Rectangle crcBounds = crcImage.getBounds();
-		crcButton.setSize(crcBounds.width, crcBounds.width);
-		crcButton.setImage(crcImage);
+		Button crcButton = createImageButton(container, crcImage);
 		
 		final Button[] buttons = new Button[] {encryptionButton, hashButton, secChanButton, crcButton};
 		final Image[] unclickedImages = new Image[] {encImage, hashImage, secChanImage, crcImage};
@@ -321,6 +308,17 @@ public class TaskSelectionPage extends WizardPage {
 		if (visible) {
 			this.container.setFocus();
 		}
+	}
+	
+	private Button createImageButton(
+		Composite container,
+		Image startImage) {
+		Button b = new Button(container, SWT.WRAP);
+		Rectangle bounds = startImage.getBounds();
+		b.setSize(bounds.width, bounds.height);
+		b.setImage(startImage);
+		
+		return b;
 	}
 	
 	private Image loadImage(String image) {
