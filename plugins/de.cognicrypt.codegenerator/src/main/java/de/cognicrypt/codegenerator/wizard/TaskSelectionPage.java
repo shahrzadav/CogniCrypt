@@ -51,6 +51,9 @@ public class TaskSelectionPage extends WizardPage {
 	private static final String LOCK_IMAGE = "lock.png";
 	private static final String LOCK_IMAGE_INVERTED = "lock_invert.png";
 	
+	private static final String HAT_IMAGE = "hat.png";
+	private static final String HAT_IMAGE_INVERTED = "hat_invert.png";
+	
 	private Composite container;
 	private ComboViewer taskComboSelection;
 	private IProject selectedProject = null;
@@ -90,7 +93,7 @@ public class TaskSelectionPage extends WizardPage {
 		encryptionButton.setLayoutData(firstButton);
 		
 		final Label selectProjectLabel = new Label(this.container, SWT.NONE);
-		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 3);
+		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4);
 		gd_selectProjectLabel.heightHint = 28;
 		gd_selectProjectLabel.widthHint = 158;
 		selectProjectLabel.setLayoutData(gd_selectProjectLabel);
@@ -98,36 +101,38 @@ public class TaskSelectionPage extends WizardPage {
 		
 		Button hashButton = new Button(container, SWT.WRAP);
 		Image hashImage = loadImage(KEY_IMAGE);
+		Image hashImageInvert = loadImage(KEY_IMAGE_INVERTED);
 		Rectangle hashBounds = hashImage.getBounds();
 		hashButton.setSize(hashBounds.width, hashBounds.width);
 		hashButton.setImage(hashImage);
 		
 		Button secChanButton = new Button(container, SWT.WRAP);
 		Image secChanImage = loadImage(WIFI_IMAGE);
+		Image secChanImageInvert = loadImage(WIFI_IMAGE_INVERTED);
 		Rectangle secChanBounds = secChanImage.getBounds();
 		secChanButton.setSize(secChanBounds.width, secChanBounds.width);
 		secChanButton.setImage(secChanImage);
 		
-		encryptionButton.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				Button cur = (Button)event.widget;
-				boolean isSelected = cur.getSelection();
-				if(isSelected) {
-					cur.setSelection(false);
-					cur.setImage(encImage);
-					selectProjectLabel.setText("Fun is different!");
-				} else {
-					cur.setSelection(true);
-					cur.setImage(encImageInvert);
-					selectProjectLabel.setText("This text is highly shortend.");
-				}
-				
-				
-			}
+		Button crcButton = new Button(container, SWT.WRAP);
+		Image crcImage = loadImage(HAT_IMAGE);
+		Image crcImageInvert = loadImage(HAT_IMAGE_INVERTED);
+		Rectangle crcBounds = crcImage.getBounds();
+		crcButton.setSize(crcBounds.width, crcBounds.width);
+		crcButton.setImage(crcImage);
+		
+		
+		Button[] buttons = new Button[] {encryptionButton, hashButton, secChanButton, crcButton};
+		Image[] unclickedImages = new Image[] {encImage, hashImage, secChanImage, crcImage};
+		Image[] clickedImages = new Image[] {encImageInvert, hashImageInvert, secChanImageInvert, crcImageInvert};
+		
+		for(Button b : buttons) {
+			b.addListener(SWT.Selection, new SelectionButtonListener(
+				buttons,
+				unclickedImages,
+				clickedImages,
+				selectProjectLabel));
 			
-		});
+		}
 		
 //		final ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 //		final Combo projectCombo = projectComboSelection.getCombo();
@@ -341,5 +346,51 @@ public class TaskSelectionPage extends WizardPage {
 		}
 		
 		return null;
+	}
+}
+
+class SelectionButtonListener implements Listener {
+
+	private final Button[] buttons;
+	private final Image[] unclicked;
+	private final Image[] clicked;
+	
+	private final Label targetLabel;
+	
+	public SelectionButtonListener(
+		Button[] buttons,
+		Image[] unclicked,
+		Image[] clicked,
+		Label targetLabel) {
+		
+		if(buttons.length != unclicked.length ||
+			buttons.length != clicked.length) {
+				throw new IllegalArgumentException(
+					"All arrays are required to have the same length."
+					+ "If not it indicates an incomplete setup for buttons and their images");
+		}
+		
+		this.buttons = buttons;
+		this.unclicked = unclicked;
+		this.clicked = clicked;
+		this.targetLabel = targetLabel;
+	}
+	
+	
+	
+	@Override
+	public void handleEvent(Event event) {
+		Button eventButton = (Button)event.widget;
+		for(int i = 0; i < buttons.length; i++) {
+			Button b = buttons[i];
+			if(eventButton.equals(b)) {
+				b.setSelection(true);
+				b.setImage(clicked[i]);
+				targetLabel.setText("Button: " + b.toString() + i);
+			} else {
+				b.setSelection(false);
+				b.setImage(unclicked[i]);
+			}
+		}
 	}
 }
