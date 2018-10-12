@@ -92,12 +92,12 @@ public class TaskSelectionPage extends WizardPage {
 		encryptionButton.setImage(encImage);
 		encryptionButton.setLayoutData(firstButton);
 		
-		final Label selectProjectLabel = new Label(this.container, SWT.NONE);
+		final Label useCaseDescriptionLabel = new Label(this.container, SWT.NONE);
 		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4);
 		gd_selectProjectLabel.heightHint = 28;
 		gd_selectProjectLabel.widthHint = 158;
-		selectProjectLabel.setLayoutData(gd_selectProjectLabel);
-		selectProjectLabel.setText(Constants.SELECT_JAVA_PROJECT);
+		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
+		useCaseDescriptionLabel.setText(Constants.SELECT_JAVA_PROJECT);
 		
 		Button hashButton = new Button(container, SWT.WRAP);
 		Image hashImage = loadImage(KEY_IMAGE);
@@ -121,17 +121,16 @@ public class TaskSelectionPage extends WizardPage {
 		crcButton.setImage(crcImage);
 		
 		
-		Button[] buttons = new Button[] {encryptionButton, hashButton, secChanButton, crcButton};
-		Image[] unclickedImages = new Image[] {encImage, hashImage, secChanImage, crcImage};
-		Image[] clickedImages = new Image[] {encImageInvert, hashImageInvert, secChanImageInvert, crcImageInvert};
+		final Button[] buttons = new Button[] {encryptionButton, hashButton, secChanButton, crcButton};
+		final Image[] unclickedImages = new Image[] {encImage, hashImage, secChanImage, crcImage};
+		final Image[] clickedImages = new Image[] {encImageInvert, hashImageInvert, secChanImageInvert, crcImageInvert};
 		
-		for(Button b : buttons) {
-			b.addListener(SWT.Selection, new SelectionButtonListener(
+		for(Button button : buttons) {
+			button.addListener(SWT.Selection, new SelectionButtonListener(
 				buttons,
 				unclickedImages,
 				clickedImages,
-				selectProjectLabel));
-			
+				useCaseDescriptionLabel));	
 		}
 		
 //		final ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
