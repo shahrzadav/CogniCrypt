@@ -127,7 +127,12 @@ public class TaskSelectionPage extends WizardPage {
 		
 		// Get Tasks 
 		final List<Task> tasks = TaskJSONReader.getTasks();
-		String[] taskdescs = new String[] {tasks.get(0).getTaskDescription(), tasks.get(2).getTaskDescription(), tasks.get(3).getTaskDescription()};
+		String[] taskdescs = new String[] { 
+				// TODO we should organize that file correctly and don't do such dirty hacks
+				tasks.get(0).getTaskDescription(),
+				tasks.get(2).getTaskDescription(),
+				tasks.get(3).getTaskDescription(),
+				tasks.get(4).getTaskDescription()};
 		
 		for(Button button : buttons) {
 			button.addListener(SWT.Selection, new SelectionButtonListener(
@@ -370,7 +375,8 @@ class SelectionButtonListener implements Listener {
 		Label targetLabel) {
 		
 		if(buttons.length != unclicked.length ||
-			buttons.length != clicked.length) {
+			buttons.length != clicked.length ||
+			buttons.length != descs.length) {
 				throw new IllegalArgumentException(
 					"All arrays are required to have the same length."
 					+ "If not it indicates an incomplete setup for buttons and their images");
