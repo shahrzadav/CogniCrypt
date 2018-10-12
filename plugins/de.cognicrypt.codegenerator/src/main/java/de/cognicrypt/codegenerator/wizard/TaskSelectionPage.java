@@ -20,8 +20,6 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -58,8 +56,6 @@ public class TaskSelectionPage extends WizardPage {
 	
 	private Composite container;
 	private Task selectedTask = null; 
-//	private ComboViewer taskComboSelection;
-//	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
 		super(Constants.SELECT_TASK);
@@ -132,41 +128,7 @@ public class TaskSelectionPage extends WizardPage {
 		
 		encryptionButton.notifyListeners(SWT.Selection, new Event());
 		
-//		final ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-//		final Combo projectCombo = projectComboSelection.getCombo();
-//		final GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-//		gd_combo.widthHint = 356;
-//		projectCombo.setLayoutData(gd_combo);
-//		projectCombo.setToolTipText(Constants.PROJECTLIST_TOOLTIP);
-//		projectCombo.setEnabled(true);
-//		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-//
-//		final Map<String, IProject> javaProjects = new HashMap<>();
-//		for (final IProject project : CodeGenUtils.complileListOfJavaProjectsInWorkspace()) {
-//			javaProjects.put(project.getName(), project);
-//		}
-//
-//		if (javaProjects.isEmpty()) {
-//			final String[] errorMessage = { Constants.ERROR_MESSAGE_NO_PROJECT };
-//			projectComboSelection.setInput(errorMessage);
-//			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
-//		} else {
-//			projectComboSelection.setInput(javaProjects.keySet().toArray());
-//			projectComboSelection.setComparator(new ViewerComparator());
-//			projectComboSelection.addSelectionChangedListener(event -> {
-//				final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
-//				this.selectedProject = javaProjects.get(selected.getFirstElement());
-//				projectComboSelection.refresh();
-//
-//			});
-//
-//			final IProject currentProject = CodeGenUtils.getCurrentProject();
-//			if (currentProject == null) {
-//				projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
-//			} else {
-//				projectComboSelection.setSelection(new StructuredSelection(currentProject.getName()));
-//			}
-//		}
+
 //
 //		final Label selectTaskLabel = new Label(this.container, SWT.NONE);
 //		final GridData gd_selectTaskLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
@@ -257,46 +219,11 @@ public class TaskSelectionPage extends WizardPage {
 		sc.setExpandVertical(true);
 		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
-
-//		//Primitive Integration
-//		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
-//		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
-//
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new PrimitiveIntegrationWizard());
-//				if (wizardDialog.open() == Window.CANCEL) {
-//					System.out.println("Ok pressed");
-//				} else {
-//					System.out.println("Cancel pressed");
-//				}
-//			}
-//		});
-//		btnPrimitiveIntegration.setText("Primitive Integration");
-//		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON TASK INTEGRATION.
-//		btnPrimitiveIntegration.setVisible(false);
-//		//Task Integration
-//		Button btnTaskIntegration = new Button(container, SWT.NONE);
-//		btnTaskIntegration.addSelectionListener(new SelectionAdapter() {
-//
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new TaskIntegrationWizard());
-//				if (wizardDialog.open() == Window.CANCEL) {
-//					System.out.println("Ok pressed");
-//				} else {
-//					System.out.println("Cancel pressed");
-//				}
-//			}
-//		});
-//		btnTaskIntegration.setText("Task Integration");
-//		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON PRIMITIVE INTEGRATION.
-//		btnTaskIntegration.setVisible(false);
-//
-//		new Label(container, SWT.NONE);
 	}
-
+	
 	public IProject getSelectedProject() {
+	
+		// this information must be queried from the Locator page.
 		return null;//this.selectedProject;
 	}
 
@@ -371,12 +298,12 @@ public class TaskSelectionPage extends WizardPage {
 			Button[] buttons,
 			Image[] unclicked,
 			Image[] clicked,
-			Task[] descs,
+			Task[] tasks,
 			Label targetLabel) {
 			
 			if(buttons.length != unclicked.length ||
 				buttons.length != clicked.length ||
-				buttons.length != descs.length) {
+				buttons.length != tasks.length) {
 					throw new IllegalArgumentException(
 						"All arrays are required to have the same length."
 						+ "If not it indicates an incomplete setup for buttons and their images");
@@ -385,7 +312,7 @@ public class TaskSelectionPage extends WizardPage {
 			this.buttons = buttons;
 			this.unclicked = unclicked;
 			this.clicked = clicked;
-			this.tasks = descs;
+			this.tasks = tasks;
 			this.targetLabel = targetLabel;
 		}
 		
@@ -401,6 +328,7 @@ public class TaskSelectionPage extends WizardPage {
 					b.setImage(clicked[i]);
 					targetLabel.setText(tasks[i].getTaskDescription());
 					selectedTask = tasks[i];
+					setPageComplete(true);
 				} else {
 					b.setSelection(false);
 					b.setImage(unclicked[i]);
