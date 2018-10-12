@@ -93,12 +93,11 @@ public class TaskSelectionPage extends WizardPage {
 		encryptionButton.setImage(encImage);
 		encryptionButton.setLayoutData(firstButton);
 		
-		final Label useCaseDescriptionLabel = new Label(this.container, SWT.NONE);
+		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
 		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4);
-		gd_selectProjectLabel.heightHint = 28;
-		gd_selectProjectLabel.widthHint = 158;
+		gd_selectProjectLabel.heightHint = 200;
+		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
-		useCaseDescriptionLabel.setText(Constants.SELECT_JAVA_PROJECT);
 		
 		Button hashButton = new Button(container, SWT.WRAP);
 		Image hashImage = loadImage(KEY_IMAGE);
