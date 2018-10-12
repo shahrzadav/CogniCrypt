@@ -38,6 +38,15 @@
 			"xslFile" : "src/main/resources/XSLTemplates/SecureCommunication.xsl"
 		},
 		{
+			"name": "Experimental",
+			"description": "This category comprises experimental algorithms and use cases that where developed with the CROSSING research project.",
+			"taskDescription": "Establish a secure communication channel (e.g., TLS/SSL connection).",
+			"modelFile" : "src/main/resources/ClaferModel/SecureCommunication.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SecureCommunication.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/SecureCommunication.xsl"
+		},
+		{
 			"name": "LongTermArchiving",
 			"description": "Securely Archive Files",
 			"taskDescription": "This cryptographic task helps to maintain complete privacy of your documents. A large number of documents can be secured by this task. ",
