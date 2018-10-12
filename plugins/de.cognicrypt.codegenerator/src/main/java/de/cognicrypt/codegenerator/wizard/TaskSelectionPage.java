@@ -57,8 +57,9 @@ public class TaskSelectionPage extends WizardPage {
 	private static final String HAT_IMAGE_INVERTED = "hat_invert.png";
 	
 	private Composite container;
-	private ComboViewer taskComboSelection;
-	private IProject selectedProject = null;
+	private Task selectedTask = null; 
+//	private ComboViewer taskComboSelection;
+//	private IProject selectedProject = null;
 
 	public TaskSelectionPage() {
 		super(Constants.SELECT_TASK);
@@ -113,12 +114,12 @@ public class TaskSelectionPage extends WizardPage {
 		
 		// Get Tasks 
 		final List<Task> tasks = TaskJSONReader.getTasks();
-		String[] taskdescs = new String[] { 
+		Task[] taskdescs = new Task[] { 
 				// TODO we should organize that file correctly and don't do such dirty hacks
-				tasks.get(0).getTaskDescription(),
-				tasks.get(2).getTaskDescription(),
-				tasks.get(3).getTaskDescription(),
-				tasks.get(4).getTaskDescription()};
+				tasks.get(0),
+				tasks.get(2),
+				tasks.get(3),
+				tasks.get(4)};
 		
 		for(Button button : buttons) {
 			button.addListener(SWT.Selection, new SelectionButtonListener(
@@ -296,11 +297,13 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	public IProject getSelectedProject() {
-		return this.selectedProject;
+		return null;//this.selectedProject;
 	}
 
 	public Task getSelectedTask() {
-		return (Task) ((IStructuredSelection) this.taskComboSelection.getSelection()).getFirstElement();
+		// TODO return task depending on the currently selected use case (via button)
+		return this.selectedTask;
+		//return (Task) ((IStructuredSelection) this.taskComboSelection.getSelection()).getFirstElement();
 	}
 
 
@@ -354,53 +357,54 @@ public class TaskSelectionPage extends WizardPage {
 		
 		return null;
 	}
-}
-
-class SelectionButtonListener implements Listener {
-
-	private final Button[] buttons;
-	private final Image[] unclicked;
-	private final Image[] clicked;
-	private final String[] descs;
 	
-	private final Label targetLabel;
-	
-	public SelectionButtonListener(
-		Button[] buttons,
-		Image[] unclicked,
-		Image[] clicked,
-		String[] descs,
-		Label targetLabel) {
+	class SelectionButtonListener implements Listener {
+
+		private final Button[] buttons;
+		private final Image[] unclicked;
+		private final Image[] clicked;
+		private final Task[] tasks;
 		
-		if(buttons.length != unclicked.length ||
-			buttons.length != clicked.length ||
-			buttons.length != descs.length) {
-				throw new IllegalArgumentException(
-					"All arrays are required to have the same length."
-					+ "If not it indicates an incomplete setup for buttons and their images");
+		private final Label targetLabel;
+		
+		public SelectionButtonListener(
+			Button[] buttons,
+			Image[] unclicked,
+			Image[] clicked,
+			Task[] descs,
+			Label targetLabel) {
+			
+			if(buttons.length != unclicked.length ||
+				buttons.length != clicked.length ||
+				buttons.length != descs.length) {
+					throw new IllegalArgumentException(
+						"All arrays are required to have the same length."
+						+ "If not it indicates an incomplete setup for buttons and their images");
+			}
+			
+			this.buttons = buttons;
+			this.unclicked = unclicked;
+			this.clicked = clicked;
+			this.tasks = descs;
+			this.targetLabel = targetLabel;
 		}
 		
-		this.buttons = buttons;
-		this.unclicked = unclicked;
-		this.clicked = clicked;
-		this.descs = descs;
-		this.targetLabel = targetLabel;
-	}
-	
-	
-	
-	@Override
-	public void handleEvent(Event event) {
-		Button eventButton = (Button)event.widget;
-		for(int i = 0; i < buttons.length; i++) {
-			Button b = buttons[i];
-			if(eventButton.equals(b)) {
-				b.setSelection(true);
-				b.setImage(clicked[i]);
-				targetLabel.setText(descs[i]);
-			} else {
-				b.setSelection(false);
-				b.setImage(unclicked[i]);
+		
+		
+		@Override
+		public void handleEvent(Event event) {
+			Button eventButton = (Button)event.widget;
+			for(int i = 0; i < buttons.length; i++) {
+				Button b = buttons[i];
+				if(eventButton.equals(b)) {
+					b.setSelection(true);
+					b.setImage(clicked[i]);
+					targetLabel.setText(tasks[i].getTaskDescription());
+					selectedTask = tasks[i];
+				} else {
+					b.setSelection(false);
+					b.setImage(unclicked[i]);
+				}
 			}
 		}
 	}
