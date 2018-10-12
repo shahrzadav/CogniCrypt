@@ -1,12 +1,11 @@
 package de.cognicrypt.codegenerator.wizard;
 
-import java.util.HashMap;
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import de.cognicrypt.codegenerator.Activator;
@@ -14,6 +13,7 @@ import de.cognicrypt.codegenerator.Activator;
 
 public class AltConfigWizard extends Wizard {
 
+	WizardPage taskListPage;
 	
 	public AltConfigWizard() {
 		super();
@@ -32,9 +32,12 @@ public class AltConfigWizard extends Wizard {
 	
 	
 	public void addPages() {
-		LocatorPage locatorPage = new LocatorPage("Locator");
+		this.taskListPage = new TaskSelectionPage();
 		setForcePreviousAndNextButtons(true);
-		addPage(locatorPage);
+		addPage(this.taskListPage);
+		// TODO do within task selection
+		// LocatorPage locatorPage = new LocatorPage("Locator");
+		// addPage(locatorPage);
     }
 	
 	

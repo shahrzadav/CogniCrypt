@@ -304,7 +304,6 @@ public class TaskSelectionPage extends WizardPage {
 //		btnTaskIntegration.setVisible(false);
 //
 //		new Label(container, SWT.NONE);
-
 	}
 
 	public IProject getSelectedProject() {
