@@ -82,7 +82,7 @@ public class TaskSelectionPage extends WizardPage {
 		gl.verticalSpacing = -6;
 		this.container.setLayout(gl);
 
-		final GridData firstButton = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		
 		Image encImage = loadImage(LOCK_IMAGE);
 		Image encImageInvert = loadImage(LOCK_IMAGE_INVERTED);
@@ -128,6 +128,8 @@ public class TaskSelectionPage extends WizardPage {
 				taskdescs,
 				useCaseDescriptionLabel));
 		}
+		
+		encryptionButton.notifyListeners(SWT.Selection, new Event());
 		
 //		final ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
 //		final Combo projectCombo = projectComboSelection.getCombo();
