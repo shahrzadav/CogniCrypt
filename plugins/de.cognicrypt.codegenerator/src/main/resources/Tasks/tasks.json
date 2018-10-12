@@ -23,7 +23,7 @@
 			"description": "Encode Password for Secure Storage",
 			"taskDescription": "Prepare a password for authentication or database storage.",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/SecurePassword.json",
+			"questionsJSONFile" : "",
 			"additionalResources" : "",
 			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"
 			
