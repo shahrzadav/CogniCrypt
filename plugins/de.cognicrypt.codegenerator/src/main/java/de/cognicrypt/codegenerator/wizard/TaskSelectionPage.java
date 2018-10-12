@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
@@ -38,6 +39,7 @@ import org.osgi.framework.Bundle;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.tasks.Task;
+import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.core.Constants;
 
 public class TaskSelectionPage extends WizardPage {
@@ -66,8 +68,7 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	@Override
-	public void createControl(final Composite parent) {
-
+	public void createControl(final Composite parent) {	
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -124,12 +125,16 @@ public class TaskSelectionPage extends WizardPage {
 		Button[] buttons = new Button[] {encryptionButton, hashButton, secChanButton, crcButton};
 		Image[] unclickedImages = new Image[] {encImage, hashImage, secChanImage, crcImage};
 		Image[] clickedImages = new Image[] {encImageInvert, hashImageInvert, secChanImageInvert, crcImageInvert};
+		// Get Tasks 
+		final List<Task> tasks = TaskJSONReader.getTasks();
+		String[] taskdescs = new String[] {tasks.get(0).getTaskDescription(), tasks.get(2).getTaskDescription(), tasks.get(3).getTaskDescription()};
 		
 		for(Button b : buttons) {
 			b.addListener(SWT.Selection, new SelectionButtonListener(
 				buttons,
 				unclickedImages,
 				clickedImages,
+				taskdescs,
 				selectProjectLabel));
 			
 		}
@@ -186,7 +191,7 @@ public class TaskSelectionPage extends WizardPage {
 //		taskCombo.setEnabled(true);
 //		this.taskComboSelection.setContentProvider(ArrayContentProvider.getInstance());
 //
-//		final List<Task> tasks = TaskJSONReader.getTasks();
+//		
 //
 //		this.taskComboSelection.setLabelProvider(new LabelProvider() {
 //
@@ -354,6 +359,7 @@ class SelectionButtonListener implements Listener {
 	private final Button[] buttons;
 	private final Image[] unclicked;
 	private final Image[] clicked;
+	private final String[] descs;
 	
 	private final Label targetLabel;
 	
@@ -361,6 +367,7 @@ class SelectionButtonListener implements Listener {
 		Button[] buttons,
 		Image[] unclicked,
 		Image[] clicked,
+		String[] descs,
 		Label targetLabel) {
 		
 		if(buttons.length != unclicked.length ||
@@ -373,6 +380,7 @@ class SelectionButtonListener implements Listener {
 		this.buttons = buttons;
 		this.unclicked = unclicked;
 		this.clicked = clicked;
+		this.descs = descs;
 		this.targetLabel = targetLabel;
 	}
 	
@@ -386,7 +394,7 @@ class SelectionButtonListener implements Listener {
 			if(eventButton.equals(b)) {
 				b.setSelection(true);
 				b.setImage(clicked[i]);
-				targetLabel.setText("Button: " + b.toString() + i);
+				targetLabel.setText(descs[i]);
 			} else {
 				b.setSelection(false);
 				b.setImage(unclicked[i]);
