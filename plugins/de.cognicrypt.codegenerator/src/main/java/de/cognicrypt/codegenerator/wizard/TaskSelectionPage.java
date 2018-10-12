@@ -64,8 +64,13 @@ import de.cognicrypt.core.Constants;
 public class TaskSelectionPage extends WizardPage {
 
 	public static final String KEY_IMAGE = "key.png";
+	public static final String KEY_IMAGE_INVERTED = "key_invert.png";
+	
 	public static final String WIFI_IMAGE = "wifi.png";
+	public static final String WIFI_IMAGE_INVERTED = "wifi_invert.png";
+	
 	private static final String LOCK_IMAGE = "lock.png";
+	private static final String LOCK_IMAGE_INVERTED = "lock_invert.png";
 	
 	private Composite container;
 	private ComboViewer taskComboSelection;
@@ -99,6 +104,7 @@ public class TaskSelectionPage extends WizardPage {
 		
 		Button encryptionButton = new Button(container, SWT.WRAP);
 		Image encImage = loadImage(LOCK_IMAGE);
+		Image encImageInvert = loadImage(LOCK_IMAGE_INVERTED);
 		Rectangle encBounds = encImage.getBounds();
 		encryptionButton.setSize(encBounds.width, encBounds.width);
 		encryptionButton.setImage(encImage);
@@ -128,9 +134,16 @@ public class TaskSelectionPage extends WizardPage {
 			@Override
 			public void handleEvent(Event event) {
 				Button cur = (Button)event.widget;
-				cur.setSelection(true);
-				cur.setImage(hashImage);
-				selectProjectLabel.setText("This text is highly shortend.");
+				boolean isSelected = cur.getSelection();
+				if(isSelected) {
+					cur.setSelection(false);
+					cur.setImage(encImage);
+					selectProjectLabel.setText("Fun is different!");
+				} else {
+					cur.setSelection(true);
+					cur.setImage(encImageInvert);
+					selectProjectLabel.setText("This text is highly shortend.");
+				}
 				
 				
 			}
