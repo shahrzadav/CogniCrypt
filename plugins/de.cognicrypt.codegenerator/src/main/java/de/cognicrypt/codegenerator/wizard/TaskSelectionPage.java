@@ -20,8 +20,6 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -61,8 +59,7 @@ public class TaskSelectionPage extends WizardPage {
 	private static final String HAT_IMAGE_INVERTED = "hat_invert.png";
 	
 	private Composite container;
-	private ComboViewer taskComboSelection;
-	private IProject selectedProject = null;
+	private Task selectedTask = null; 
 
 	public TaskSelectionPage() {
 		super(Constants.SELECT_TASK);
@@ -86,16 +83,11 @@ public class TaskSelectionPage extends WizardPage {
 		gl.verticalSpacing = -6;
 		this.container.setLayout(gl);
 
+		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		
-		final GridData firstButton = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		
-		Button encryptionButton = new Button(container, SWT.WRAP);
 		Image encImage = loadImage(LOCK_IMAGE);
 		Image encImageInvert = loadImage(LOCK_IMAGE_INVERTED);
-		Rectangle encBounds = encImage.getBounds();
-		encryptionButton.setSize(encBounds.width, encBounds.width);
-		encryptionButton.setImage(encImage);
-		encryptionButton.setLayoutData(firstButton);
+		Button encryptionButton = createImageButton(container, encImage);
 		
 		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
 		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4);
@@ -103,26 +95,18 @@ public class TaskSelectionPage extends WizardPage {
 		gd_selectProjectLabel.widthHint = 600;
 		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
 		
-		Button hashButton = new Button(container, SWT.WRAP);
 		Image hashImage = loadImage(KEY_IMAGE);
 		Image hashImageInvert = loadImage(KEY_IMAGE_INVERTED);
-		Rectangle hashBounds = hashImage.getBounds();
-		hashButton.setSize(hashBounds.width, hashBounds.width);
-		hashButton.setImage(hashImage);
 		
-		Button secChanButton = new Button(container, SWT.WRAP);
+		Button hashButton = createImageButton(container, hashImage);
+		
 		Image secChanImage = loadImage(WIFI_IMAGE);
 		Image secChanImageInvert = loadImage(WIFI_IMAGE_INVERTED);
-		Rectangle secChanBounds = secChanImage.getBounds();
-		secChanButton.setSize(secChanBounds.width, secChanBounds.width);
-		secChanButton.setImage(secChanImage);
+		Button secChanButton = createImageButton(container, secChanImage);
 		
-		Button crcButton = new Button(container, SWT.WRAP);
 		Image crcImage = loadImage(HAT_IMAGE);
 		Image crcImageInvert = loadImage(HAT_IMAGE_INVERTED);
-		Rectangle crcBounds = crcImage.getBounds();
-		crcButton.setSize(crcBounds.width, crcBounds.width);
-		crcButton.setImage(crcImage);
+		Button crcButton = createImageButton(container, crcImage);
 		
 		final Button[] buttons = new Button[] {encryptionButton, hashButton, secChanButton, crcButton};
 		final Image[] unclickedImages = new Image[] {encImage, hashImage, secChanImage, crcImage};
@@ -130,12 +114,12 @@ public class TaskSelectionPage extends WizardPage {
 		
 		// Get Tasks 
 		final List<Task> tasks = TaskJSONReader.getTasks();
-		String[] taskdescs = new String[] { 
+		Task[] taskdescs = new Task[] { 
 				// TODO we should organize that file correctly and don't do such dirty hacks
-				tasks.get(0).getTaskDescription(),
-				tasks.get(2).getTaskDescription(),
-				tasks.get(3).getTaskDescription(),
-				tasks.get(4).getTaskDescription()};
+				tasks.get(0),
+				tasks.get(2),
+				tasks.get(3),
+				tasks.get(4)};
 		
 		for(Button button : buttons) {
 			button.addListener(SWT.Selection, new SelectionButtonListener(
@@ -146,41 +130,9 @@ public class TaskSelectionPage extends WizardPage {
 				useCaseDescriptionLabel));
 		}
 		
-//		final ComboViewer projectComboSelection = new ComboViewer(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
-//		final Combo projectCombo = projectComboSelection.getCombo();
-//		final GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-//		gd_combo.widthHint = 356;
-//		projectCombo.setLayoutData(gd_combo);
-//		projectCombo.setToolTipText(Constants.PROJECTLIST_TOOLTIP);
-//		projectCombo.setEnabled(true);
-//		projectComboSelection.setContentProvider(ArrayContentProvider.getInstance());
-//
-//		final Map<String, IProject> javaProjects = new HashMap<>();
-//		for (final IProject project : CodeGenUtils.complileListOfJavaProjectsInWorkspace()) {
-//			javaProjects.put(project.getName(), project);
-//		}
-//
-//		if (javaProjects.isEmpty()) {
-//			final String[] errorMessage = { Constants.ERROR_MESSAGE_NO_PROJECT };
-//			projectComboSelection.setInput(errorMessage);
-//			projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
-//		} else {
-//			projectComboSelection.setInput(javaProjects.keySet().toArray());
-//			projectComboSelection.setComparator(new ViewerComparator());
-//			projectComboSelection.addSelectionChangedListener(event -> {
-//				final IStructuredSelection selected = (IStructuredSelection) event.getSelection();
-//				this.selectedProject = javaProjects.get(selected.getFirstElement());
-//				projectComboSelection.refresh();
-//
-//			});
-//
-//			final IProject currentProject = CodeGenUtils.getCurrentProject();
-//			if (currentProject == null) {
-//				projectComboSelection.setSelection(new StructuredSelection(projectComboSelection.getElementAt(0)));
-//			} else {
-//				projectComboSelection.setSelection(new StructuredSelection(currentProject.getName()));
-//			}
-//		}
+		encryptionButton.notifyListeners(SWT.Selection, new Event());
+		
+
 //
 //		final Label selectTaskLabel = new Label(this.container, SWT.NONE);
 //		final GridData gd_selectTaskLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
@@ -271,52 +223,18 @@ public class TaskSelectionPage extends WizardPage {
 		sc.setExpandVertical(true);
 		sc.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
-
-//		//Primitive Integration
-//		Button btnPrimitiveIntegration = new Button(container, SWT.NONE);
-//		btnPrimitiveIntegration.addSelectionListener(new SelectionAdapter() {
-//
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new PrimitiveIntegrationWizard());
-//				if (wizardDialog.open() == Window.CANCEL) {
-//					System.out.println("Ok pressed");
-//				} else {
-//					System.out.println("Cancel pressed");
-//				}
-//			}
-//		});
-//		btnPrimitiveIntegration.setText("Primitive Integration");
-//		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON TASK INTEGRATION.
-//		btnPrimitiveIntegration.setVisible(false);
-//		//Task Integration
-//		Button btnTaskIntegration = new Button(container, SWT.NONE);
-//		btnTaskIntegration.addSelectionListener(new SelectionAdapter() {
-//
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				WizardDialog wizardDialog = new WizardDialog(parent.getShell(), new TaskIntegrationWizard());
-//				if (wizardDialog.open() == Window.CANCEL) {
-//					System.out.println("Ok pressed");
-//				} else {
-//					System.out.println("Cancel pressed");
-//				}
-//			}
-//		});
-//		btnTaskIntegration.setText("Task Integration");
-//		//Visibility SET TO FALSE. REMOVE FOLLOWING LINE WHEN WORKING ON PRIMITIVE INTEGRATION.
-//		btnTaskIntegration.setVisible(false);
-//
-//		new Label(container, SWT.NONE);
-
 	}
-
+	
 	public IProject getSelectedProject() {
-		return this.selectedProject;
+	
+		// this information must be queried from the Locator page.
+		return null;//this.selectedProject;
 	}
 
 	public Task getSelectedTask() {
-		return (Task) ((IStructuredSelection) this.taskComboSelection.getSelection()).getFirstElement();
+		// TODO return task depending on the currently selected use case (via button)
+		return this.selectedTask;
+		//return (Task) ((IStructuredSelection) this.taskComboSelection.getSelection()).getFirstElement();
 	}
 
 
@@ -326,6 +244,17 @@ public class TaskSelectionPage extends WizardPage {
 		if (visible) {
 			this.container.setFocus();
 		}
+	}
+	
+	private Button createImageButton(
+		Composite container,
+		Image startImage) {
+		Button b = new Button(container, SWT.WRAP);
+		Rectangle bounds = startImage.getBounds();
+		b.setSize(bounds.width, bounds.height);
+		b.setImage(startImage);
+		
+		return b;
 	}
 	
 	private Image loadImage(String image) {
@@ -359,53 +288,55 @@ public class TaskSelectionPage extends WizardPage {
 		
 		return null;
 	}
-}
-
-class SelectionButtonListener implements Listener {
-
-	private final Button[] buttons;
-	private final Image[] unclicked;
-	private final Image[] clicked;
-	private final String[] descs;
 	
-	private final Label targetLabel;
-	
-	public SelectionButtonListener(
-		Button[] buttons,
-		Image[] unclicked,
-		Image[] clicked,
-		String[] descs,
-		Label targetLabel) {
+	class SelectionButtonListener implements Listener {
+
+		private final Button[] buttons;
+		private final Image[] unclicked;
+		private final Image[] clicked;
+		private final Task[] tasks;
 		
-		if(buttons.length != unclicked.length ||
-			buttons.length != clicked.length ||
-			buttons.length != descs.length) {
-				throw new IllegalArgumentException(
-					"All arrays are required to have the same length."
-					+ "If not it indicates an incomplete setup for buttons and their images");
+		private final Label targetLabel;
+		
+		public SelectionButtonListener(
+			Button[] buttons,
+			Image[] unclicked,
+			Image[] clicked,
+			Task[] tasks,
+			Label targetLabel) {
+			
+			if(buttons.length != unclicked.length ||
+				buttons.length != clicked.length ||
+				buttons.length != tasks.length) {
+					throw new IllegalArgumentException(
+						"All arrays are required to have the same length."
+						+ "If not it indicates an incomplete setup for buttons and their images");
+			}
+			
+			this.buttons = buttons;
+			this.unclicked = unclicked;
+			this.clicked = clicked;
+			this.tasks = tasks;
+			this.targetLabel = targetLabel;
 		}
 		
-		this.buttons = buttons;
-		this.unclicked = unclicked;
-		this.clicked = clicked;
-		this.descs = descs;
-		this.targetLabel = targetLabel;
-	}
-	
-	
-	
-	@Override
-	public void handleEvent(Event event) {
-		Button eventButton = (Button)event.widget;
-		for(int i = 0; i < buttons.length; i++) {
-			Button b = buttons[i];
-			if(eventButton.equals(b)) {
-				b.setSelection(true);
-				b.setImage(clicked[i]);
-				targetLabel.setText(descs[i]);
-			} else {
-				b.setSelection(false);
-				b.setImage(unclicked[i]);
+		
+		
+		@Override
+		public void handleEvent(Event event) {
+			Button eventButton = (Button)event.widget;
+			for(int i = 0; i < buttons.length; i++) {
+				Button b = buttons[i];
+				if(eventButton.equals(b)) {
+					b.setSelection(true);
+					b.setImage(clicked[i]);
+					targetLabel.setText(tasks[i].getTaskDescription());
+					selectedTask = tasks[i];
+					setPageComplete(true);
+				} else {
+					b.setSelection(false);
+					b.setImage(unclicked[i]);
+				}
 			}
 		}
 	}
