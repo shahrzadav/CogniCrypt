@@ -47,7 +47,6 @@
 			"xslFile" : "src/main/resources/XSLTemplates/SecureCommunication.xsl"
 		},
 		{
-<<<<<<< HEAD
 			"name": "LongTermArchiving",
 			"description": "Securely Archive Files",
 			"taskDescription": "This cryptographic task helps to maintain complete privacy of your documents. A large number of documents can be secured by this task. ",
@@ -75,8 +74,6 @@
 			"xslFile" : "src/main/resources/XSLTemplates/CertainTrust.xsl"
 		},
 		{
-=======
->>>>>>> refs/heads/master
 			"name": "DigitalSignatures",
 			"description": "Digitally sign documents",
 			"taskDescription": "This cryptographic task generates code that allows for the signing of data. A new key pair is generated for the signature and you may also get code for verification generated.",			
