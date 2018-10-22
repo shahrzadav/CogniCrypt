@@ -43,7 +43,7 @@ public class AltConfigWizard extends Wizard {
 
 	private TaskSelectionPage taskListPage;
 	private WizardPage preferenceSelectionPage;
-	private DefaultAlgorithmPage defaultAlgorithmPage;
+	private LocatorPage locatorPage;
 	private InstanceListPage instanceListPage;
 	private ClaferModel claferModel;
 	private HashMap<Question, Answer> constraints;
@@ -84,9 +84,6 @@ public class AltConfigWizard extends Wizard {
 	@Override
 	public boolean canFinish() {
 		final String pageName = getContainer().getCurrentPage().getName();
-		if (pageName.equals(Constants.DEFAULT_ALGORITHM_PAGE)) {
-			return (!this.defaultAlgorithmPage.isDefaultAlgorithm());
-		}
 		return (pageName.equals(Constants.ALGORITHM_SELECTION_PAGE));
 
 	}
@@ -248,9 +245,9 @@ public class AltConfigWizard extends Wizard {
 			if (currentPage instanceof BeginnerTaskQuestionPage) {
 				//default algorithm page will be added only for beginner mode
 				if (instanceGenerator.getNoOfInstances() != 0) {
-					this.defaultAlgorithmPage = new DefaultAlgorithmPage(instanceGenerator, this.constraints, this.taskListPage);
-					addPage(this.defaultAlgorithmPage);
-					return this.defaultAlgorithmPage;
+					this.locatorPage = new LocatorPage("Locator");
+					addPage(this.locatorPage);
+					return this.locatorPage;
 
 				} else {
 					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
@@ -258,7 +255,7 @@ public class AltConfigWizard extends Wizard {
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
 				}
-			} else if (currentPage instanceof AdvancedUserValueSelectionPage) {
+			} /* else if (currentPage instanceof AdvancedUserValueSelectionPage) {
 				//instance list page will be added after advanced user value selection page in advanced mode.
 				//(default algorithm page is not added in advanced mode)
 				if (instanceGenerator.getNoOfInstances() > 0) {
@@ -272,7 +269,7 @@ public class AltConfigWizard extends Wizard {
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
 				}
-			}
+			} */
 
 		}
 		//adding instance details page after default algorithm page in beginner mode
@@ -282,11 +279,11 @@ public class AltConfigWizard extends Wizard {
 
 				instanceGenerator.generateInstances(this.constraints);
 			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
-			if (this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
+			/*if (this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
 				this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage, this.defaultAlgorithmPage);
 				addPage(this.instanceListPage);
 				return this.instanceListPage;
-			}
+			}*/
 		}
 
 		return currentPage;
@@ -354,8 +351,8 @@ public class AltConfigWizard extends Wizard {
 			ret = this.instanceListPage.isPageComplete();
 			instance = this.instanceListPage.getValue();
 		} else if (Constants.DEFAULT_ALGORITHM_PAGE.equals(currentPageName)) {
-			ret = this.defaultAlgorithmPage.isPageComplete();
-			instance = this.defaultAlgorithmPage.getValue();
+			ret = this.locatorPage.isPageComplete();
+			//instance = this.locatorPage.getValue();
 		}
 
 		// Initialize Code Generation
