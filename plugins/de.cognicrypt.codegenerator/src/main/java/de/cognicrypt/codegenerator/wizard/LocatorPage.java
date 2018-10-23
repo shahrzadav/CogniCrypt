@@ -92,7 +92,6 @@ public class LocatorPage extends WizardPage {
 		treeViewer.setInput(ResourcesPlugin.getWorkspace());
 
 		setControl(composite);
-		this.setPageComplete(true);
 	}
 
 	public void containerSelectionChanged(Object object, Text containerNameField) {
