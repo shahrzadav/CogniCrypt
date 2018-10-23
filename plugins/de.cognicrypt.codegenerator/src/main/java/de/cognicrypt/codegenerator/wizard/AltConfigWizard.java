@@ -182,15 +182,24 @@ public class AltConfigWizard extends Wizard {
 			this.claferModel = new ClaferModel(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile()));
 
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
-			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
-			if (this.constraints != null) {
-				this.constraints = null;
+			// It is possible that now questions are within a BeginnerModeQuestionnaire
+			if (this.beginnerQuestions.getPages().size() > 0)  {
+				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
+				if (this.constraints != null) {
+					this.constraints = null;
+				}
+				if (this.preferenceSelectionPage != null) {
+					addPage(this.preferenceSelectionPage);
+				}
+				return this.preferenceSelectionPage;
+				// Return the Locator page if no questions exists.
+				// TODO Remove code duplication. 
+			} else {
+				this.locatorPage = new LocatorPage("Locator");
+				addPage(this.locatorPage);
+				return this.locatorPage;
 			}
-			if (this.preferenceSelectionPage != null) {
-				addPage(this.preferenceSelectionPage);
-			}
-			return this.preferenceSelectionPage;
-		} else if (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage) {
+		} else if (currentPage instanceof BeginnerTaskQuestionPage) {
 			/**
 			 * If current page is either question or properties page (in Advanced mode)
 			 */
@@ -255,22 +264,7 @@ public class AltConfigWizard extends Wizard {
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
 				}
-			} /* else if (currentPage instanceof AdvancedUserValueSelectionPage) {
-				//instance list page will be added after advanced user value selection page in advanced mode.
-				//(default algorithm page is not added in advanced mode)
-				if (instanceGenerator.getNoOfInstances() > 0) {
-					this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage, this.defaultAlgorithmPage);
-					addPage(this.instanceListPage);
-					return this.instanceListPage;
-
-				} else {
-					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-						final String message = Constants.NO_POSSIBLE_COMBINATIONS_ARE_AVAILABLE;
-						MessageDialog.openError(new Shell(), "Error", message);
-					}
-				}
-			} */
-
+			}
 		}
 		//adding instance details page after default algorithm page in beginner mode
 		else if (currentPage instanceof DefaultAlgorithmPage) {
@@ -278,12 +272,7 @@ public class AltConfigWizard extends Wizard {
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 				instanceGenerator.generateInstances(this.constraints);
-			//instance details page will be added after default algorithm page only if the number of instances is greater than 1
-			/*if (this.defaultAlgorithmPage.isDefaultAlgorithm() && instanceGenerator.getNoOfInstances() > 1) {
-				this.instanceListPage = new InstanceListPage(instanceGenerator, this.constraints, this.taskListPage, this.defaultAlgorithmPage);
-				addPage(this.instanceListPage);
-				return this.instanceListPage;
-			}*/
+
 		}
 
 		return currentPage;
