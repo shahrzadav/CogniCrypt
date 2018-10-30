@@ -250,7 +250,8 @@ public class ConfiguratorWizard extends Wizard {
 						}
 					}
 					if (this.preferenceSelectionPage != null) {
-						addPage(this.preferenceSelectionPage);
+						LocatorPage locatorPage = new LocatorPage("Locator");
+						addPage(locatorPage);
 					}
 					return this.preferenceSelectionPage;
 				}
@@ -273,7 +274,7 @@ public class ConfiguratorWizard extends Wizard {
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
 				}
-			} else if (currentPage instanceof AdvancedUserValueSelectionPage) {
+			} /*else if (currentPage instanceof AdvancedUserValueSelectionPage) {
 				//instance list page will be added after advanced user value selection page in advanced mode.
 				//(default algorithm page is not added in advanced mode)
 				if (instanceGenerator.getNoOfInstances() > 0) {
@@ -287,7 +288,7 @@ public class ConfiguratorWizard extends Wizard {
 						MessageDialog.openError(new Shell(), "Error", message);
 					}
 				}
-			}
+			} */
 
 		}
 		//adding instance details page after default algorithm page in beginner mode

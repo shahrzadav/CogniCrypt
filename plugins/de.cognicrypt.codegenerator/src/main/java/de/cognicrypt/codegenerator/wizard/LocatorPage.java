@@ -28,45 +28,41 @@ public class LocatorPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
+		 Composite composite = new Composite(parent, SWT.NONE);
+	     composite.setLayout(new GridLayout());
 
-		GridLayout layout = new GridLayout();
-		layout.marginWidth = 5;
-		parent.setLayout(layout);
-		parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		Label label = new Label(parent, SWT.WRAP);
+		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		
+		
+		
+		Label label = new Label(composite, SWT.WRAP);
 		label.setText(
 			"Please select the file CogniCrypt should generate code into. You may also select a package or \nproject. In this case, CogniCrypt will generate a new Java source file within the selected resource.");
 		label.setFont(this.getFont());
 
-		DrillDownComposite drillDown = new DrillDownComposite(parent, SWT.BORDER);
+		DrillDownComposite drillDown = new DrillDownComposite(composite, SWT.BORDER);
 		GridData spec = new GridData(SWT.FILL, SWT.FILL, true, true);
 		spec.widthHint = 320;
 		spec.heightHint = 300;
 		drillDown.setLayoutData(spec);
-
+		
 		// Create tree viewer inside drill down.
 		TreeViewer treeViewer = new TreeViewer(drillDown, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDown.setChildTree(treeViewer);
 		ContainerContentProvider cp = new ContainerContentProvider();
 		cp.showClosedProjects(true);
 		
-		Composite selResGroup = new Composite(parent, SWT.BOTTOM);
 		
-		GridLayout selReslayout = new GridLayout();
-		selReslayout.marginWidth = 0;
-		selResGroup.setLayout(layout);
-		selResGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		
-		Label selResLabel = new Label(selResGroup, SWT.WRAP);
+		Label selResLabel = new Label(composite, SWT.WRAP);
 		selResLabel.setText("Selected Resource: ");
 		selResLabel.setFont(this.getFont());
 		
-		Text containerNameField = new Text(selResGroup, SWT.SINGLE | SWT.BORDER);
+		Text containerNameField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.widthHint = 240;
 		containerNameField.setLayoutData(gd);
-//		containerNameField.addListener(SWT.Modify, listener);
 		containerNameField.setFont(this.getFont());
 
 		treeViewer.setContentProvider(new WorkbenchContentProvider());
@@ -95,8 +91,7 @@ public class LocatorPage extends WizardPage {
 		// This has to be done after the viewer has been laid out
 		treeViewer.setInput(ResourcesPlugin.getWorkspace());
 
-		setControl(parent);
-
+		setControl(composite);
 	}
 
 	public void containerSelectionChanged(Object object, Text containerNameField) {
