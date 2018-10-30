@@ -24,6 +24,7 @@ public class LocatorPage extends WizardPage {
 
 	protected LocatorPage(String pageName) {
 		super(pageName);
+		setPageComplete(false);
 	}
 
 	@Override
@@ -32,8 +33,6 @@ public class LocatorPage extends WizardPage {
 	     composite.setLayout(new GridLayout());
 
 		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		
-		
 		
 		Label label = new Label(composite, SWT.WRAP);
 		label.setText(
@@ -71,7 +70,12 @@ public class LocatorPage extends WizardPage {
 		treeViewer.setUseHashlookup(true);
 		treeViewer.addSelectionChangedListener(event -> {
 			IStructuredSelection selection = event.getStructuredSelection();
-			containerSelectionChanged(selection.getFirstElement(), containerNameField); // allow null
+			Object firstElement = selection.getFirstElement();
+			containerSelectionChanged(firstElement, containerNameField); // allow null
+			if (firstElement != null) {
+				this.setPageComplete(true);
+			}
+			
 		});
 		treeViewer.addDoubleClickListener(event -> {
 			ISelection selection = event.getSelection();

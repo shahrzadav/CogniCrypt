@@ -75,16 +75,13 @@ public class AltConfigWizard extends Wizard {
 		this.taskListPage = new TaskSelectionPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(this.taskListPage);
-		// TODO do within task selection
-		// LocatorPage locatorPage = new LocatorPage("Locator");
-		// addPage(locatorPage);
     }
 	
 	
 	@Override
 	public boolean canFinish() {
-		final String pageName = getContainer().getCurrentPage().getName();
-		return (pageName.equals(Constants.ALGORITHM_SELECTION_PAGE));
+		final IWizardPage page = getContainer().getCurrentPage();
+		return page instanceof LocatorPage && page.isPageComplete();
 
 	}
 
