@@ -58,9 +58,8 @@ public class SootRunner {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
-				
-				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
 				BoomerangPretransformer.v().apply();
+				final JimpleBasedInterproceduralCFG icfg = new JimpleBasedInterproceduralCFG(false);
 				final CryptoScanner scanner = new CryptoScanner(getRules()) {
 
 					@Override
