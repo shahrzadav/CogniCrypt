@@ -22,6 +22,8 @@ import org.eclipse.ui.part.DrillDownComposite;
 
 public class LocatorPage extends WizardPage {
 
+	private IStructuredSelection selectedResource = null;
+	
 	protected LocatorPage(String pageName) {
 		super(pageName);
 		setPageComplete(false);
@@ -74,6 +76,7 @@ public class LocatorPage extends WizardPage {
 			containerSelectionChanged(firstElement, containerNameField); // allow null
 			if (firstElement != null) {
 				this.setPageComplete(true);
+				selectedResource = selection;
 			}
 			
 		});
@@ -108,6 +111,11 @@ public class LocatorPage extends WizardPage {
 		}
 		containerNameField.setText(text);
 		containerNameField.setToolTipText(text);
+	}
+
+	
+	public IStructuredSelection getSelectedResource() {
+		return selectedResource;
 	}
 
 }
