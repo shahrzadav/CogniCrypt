@@ -22,8 +22,11 @@ import org.eclipse.ui.part.DrillDownComposite;
 
 public class LocatorPage extends WizardPage {
 
+	private IStructuredSelection selectedResource = null;
+	
 	protected LocatorPage(String pageName) {
 		super(pageName);
+		setPageComplete(false);
 	}
 
 	@Override
@@ -32,8 +35,6 @@ public class LocatorPage extends WizardPage {
 	     composite.setLayout(new GridLayout());
 
 		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		
-		
 		
 		Label label = new Label(composite, SWT.WRAP);
 		label.setText(
@@ -71,7 +72,13 @@ public class LocatorPage extends WizardPage {
 		treeViewer.setUseHashlookup(true);
 		treeViewer.addSelectionChangedListener(event -> {
 			IStructuredSelection selection = event.getStructuredSelection();
-			containerSelectionChanged(selection.getFirstElement(), containerNameField); // allow null
+			Object firstElement = selection.getFirstElement();
+			containerSelectionChanged(firstElement, containerNameField); // allow null
+			if (firstElement != null) {
+				this.setPageComplete(true);
+				selectedResource = selection;
+			}
+			
 		});
 		treeViewer.addDoubleClickListener(event -> {
 			ISelection selection = event.getSelection();
@@ -104,6 +111,11 @@ public class LocatorPage extends WizardPage {
 		}
 		containerNameField.setText(text);
 		containerNameField.setToolTipText(text);
+	}
+
+	
+	public IStructuredSelection getSelectedResource() {
+		return selectedResource;
 	}
 
 }

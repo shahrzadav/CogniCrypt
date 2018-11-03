@@ -3,6 +3,7 @@ package de.cognicrypt.codegenerator.wizard;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -37,14 +38,13 @@ import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.GUIElements;
-
+import de.cognicrypt.utils.Utils;
 
 public class AltConfigWizard extends Wizard {
 
 	private TaskSelectionPage taskListPage;
 	private WizardPage preferenceSelectionPage;
 	private LocatorPage locatorPage;
-	private InstanceListPage instanceListPage;
 	private ClaferModel claferModel;
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
@@ -52,8 +52,6 @@ public class AltConfigWizard extends Wizard {
 	private int prevPageId;
 	private List<Integer> protocolList;
 
-	
-	
 	public AltConfigWizard() {
 		super();
 		// Set the Look and Feel of the application to the operating
@@ -69,22 +67,17 @@ public class AltConfigWizard extends Wizard {
 
 		this.createdPages = new HashMap<>();
 	}
-	
-	
+
 	public void addPages() {
 		this.taskListPage = new TaskSelectionPage();
 		setForcePreviousAndNextButtons(true);
 		addPage(this.taskListPage);
-		// TODO do within task selection
-		// LocatorPage locatorPage = new LocatorPage("Locator");
-		// addPage(locatorPage);
-    }
-	
-	
+	}
+
 	@Override
 	public boolean canFinish() {
-		final String pageName = getContainer().getCurrentPage().getName();
-		return (pageName.equals(Constants.ALGORITHM_SELECTION_PAGE));
+		final IWizardPage page = getContainer().getCurrentPage();
+		return page instanceof LocatorPage && page.isPageComplete();
 
 	}
 
@@ -183,7 +176,7 @@ public class AltConfigWizard extends Wizard {
 
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
-			if (this.beginnerQuestions.getPages().size() > 0)  {
+			if (this.beginnerQuestions.getPages().size() > 0) {
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
 				if (this.constraints != null) {
 					this.constraints = null;
@@ -271,8 +264,10 @@ public class AltConfigWizard extends Wizard {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
-				instanceGenerator.generateInstances(this.constraints);
+			instanceGenerator.generateInstances(this.constraints);
 
+		} else if (currentPage instanceof LocatorPage) {
+			
 		}
 
 		return currentPage;
@@ -333,20 +328,19 @@ public class AltConfigWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		boolean ret = false;
-		InstanceClafer instance = null;
-		final String currentPageName = getContainer().getCurrentPage().getName();
-		if (Constants.ALGORITHM_SELECTION_PAGE.equals(currentPageName)) {
-			ret = this.instanceListPage.isPageComplete();
-			instance = this.instanceListPage.getValue();
-		} else if (Constants.DEFAULT_ALGORITHM_PAGE.equals(currentPageName)) {
-			ret = this.locatorPage.isPageComplete();
-			//instance = this.locatorPage.getValue();
-		}
+		boolean ret = true;
+		final Task selectedTask = this.taskListPage.getSelectedTask();
+		this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
+		InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
+			.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
+
+		instanceGenerator.generateInstances(this.constraints);
+		Map<String, InstanceClafer> instances = instanceGenerator.getInstances();
+		InstanceClafer instance = instances.values().iterator().next();
+		final LocatorPage currentPage = (LocatorPage) getContainer().getCurrentPage();
 
 		// Initialize Code Generation
-		final Task selectedTask = this.taskListPage.getSelectedTask();
-		final CodeGenerator codeGenerator = new XSLBasedGenerator(this.taskListPage.getSelectedProject(), selectedTask.getXslFile());
+		final CodeGenerator codeGenerator = new XSLBasedGenerator(Utils.getIProjectFromISelection(currentPage.getSelectedResource()), selectedTask.getXslFile());
 		final DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 
 		// Generate code template
@@ -360,5 +354,4 @@ public class AltConfigWizard extends Wizard {
 		return this.constraints;
 	}
 
-	
 }
