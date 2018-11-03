@@ -349,10 +349,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case text:
-
+				
 				final Text inputField = new Text(container, SWT.BORDER);
 				inputField.setLayoutData(new GridData(100, SWT.DEFAULT));
 				inputField.setToolTipText(question.getTooltip());
+				inputField.setMessage(question.getMessage());
 
 				ControlDecoration deco = new ControlDecoration(inputField, SWT.LEFT | SWT.TOP);
 				FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
@@ -389,6 +390,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 
 					text(question, inputField);
+					// TODO "Bug fix": Get text out of json file
 				} else if (question.getTextType().equals(Constants.PASSWORD)) {
 					inputField.setLayoutData(new GridData(120, SWT.DEFAULT));
 					inputField.setEchoChar((char) 0x25cf);
@@ -431,7 +433,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.PORT_NUMBER)) {
-					inputField.setToolTipText(Constants.PORT_NUMBER_TOOLTIP);
 					inputField.addVerifyListener(new VerifyListener() {
 
 						@Override
@@ -457,8 +458,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					});
 					text(question, inputField);
 				} else if (question.getTextType().equals(Constants.IP_ADDRESS)) {
-					inputField.setToolTipText(Constants.IP_ADDRESS_TOOLTIP);
-
 					inputField.addVerifyListener(new VerifyListener() {
 
 						@Override

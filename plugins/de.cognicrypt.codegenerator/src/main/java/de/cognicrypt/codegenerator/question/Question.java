@@ -37,7 +37,9 @@ public class Question {
 	private String tooltip = "";
 	//helpText
 	private transient String helpText = "";
-
+	//Message for showing a grayed text in a text field
+	private String message = "";
+	
 	public ArrayList<Answer> getAnswers() {
 		return this.answers;
 	}
@@ -82,6 +84,11 @@ public class Question {
 	//added get method for tooltip
 	public String getTooltip() {
 		return this.tooltip;
+	}
+	
+	//getMessage returns a message string 
+	public String getMessage() {
+		return this.message;
 	}
 
 	//added the type of the text
