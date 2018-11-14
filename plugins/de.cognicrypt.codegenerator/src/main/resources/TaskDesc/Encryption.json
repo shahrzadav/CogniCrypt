@@ -1,0 +1,86 @@
+[{
+  "id": "0",
+  "helpID": "HybridEncryption_Page0",
+  "content": [{
+      "id": "0",
+      "element":"radio",
+      "note": "",      
+      "questionText": "Which method of communication would you prefer to use for key exchange?",
+      "answers": [ {
+          "value": "Encrypted digital channel",
+          "codeDependencies": [{
+            "option": "hybrid",
+            "value": "true"
+          }],
+          "defaultAnswer": true
+        },
+        {
+          "value": "Encrypted Hard Drive",
+          "codeDependencies": [{
+            "option": "hybrid",
+            "value": "true"
+          }]
+        },
+        {
+          "value": "Unencrypted digital channel (e.g. email)",
+          "codeDependencies": [{
+            "option": "hybrid",
+            "value": "true"
+          }]
+        },
+        {
+          "value": "Unencrypted analog channel (e.g. phone, mail)",
+          "codeDependencies": [{
+            "option": "hybrid",
+            "value": "false"
+          }]
+        },
+        {
+          "value": "No Sharing",
+          "codeDependencies": [{
+            "option": "hybrid",
+            "value": "false"
+          }]
+        },
+       ]
+    },
+    {
+      "id": "1",
+      "element": "checkbox",
+      "note":"",      
+      "questionText": "What type of data do you wish to encrypt?",
+      "answers": [{
+          "value": "File",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "byte[]"
+          }]
+        },
+        {
+          "value": "String",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "File"
+          }]
+        },
+        {
+          "value": "Byte Array",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "String"
+          }]
+        },
+        {
+          "value": "Other/Do not know",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "Other"
+          }],
+             "defaultAnswer": true
+        }
+      ]
+    }
+  ],
+  "nextID": "-1"
+}
+]
