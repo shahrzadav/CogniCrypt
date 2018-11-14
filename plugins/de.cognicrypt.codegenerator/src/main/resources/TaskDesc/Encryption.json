@@ -42,13 +42,13 @@
             "value": "false"
           }]
         },
-       ]
+        ]
     },
     {
       "id": "1",
       "element": "checkbox",
       "note":"",      
-      "questionText": "What type of data do you wish to encrypt?",
+      "questionText": "What data type do you wish to encrypt?",
       "answers": [{
           "value": "File",
           "codeDependencies": [{
