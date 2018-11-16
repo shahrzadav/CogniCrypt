@@ -1,25 +1,6 @@
 [
 		{
 			"name": "Encryption",
-			"description": "Encrypt Data for/in Rest.",
-			"taskDescription": "To facilitate encryption and decryption, you have to exchange a key with the party who wil lend up reading the encrypted data.",
-			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryption.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/SymmetricEncryption.json",
-			"additionalResources" : "",
-			"xslFile" : "src/main/resources/XSLTemplates/SymmetricEncryption.xsl"
-			
-		},
-		{
-			"name": "HybridEncryption",
-			"description": "Hybrid Encryption",
-			"taskDescription": "This cryptographic task generates code that combine the advantages of symmetric and asymmetric encryption. At first the symmetric encryption encrypt the data. Afterwards, the symmetric key(session key) becomes encrypted with the public key of the communication partner. The partner decrypt the symmetric key with his own private key. After that, he owns the symmetric key and has the possibility to encrypt the data of the sender.",			
-			"modelFile" : "src/main/resources/ClaferModel/HybridEncryption.js",
-			"questionsJSONFile" : "src/main/resources/TaskDesc/HybridEncryption.json",
-			"additionalResources" : "",
-			"xslFile" : "src/main/resources/XSLTemplates/HybridEncryption.xsl"
-		},
-		{
-			"name": "Encryption",
 			"description": "Encrypting data",
 			"taskDescription": "This cryptographic task generates code encrypts data. Depending on the exact use-case, it either combines secret and public-key encryption or makes use of password-based encryption.",			
 			"modelFile" : "src/main/resources/ClaferModel/Encryption.js",
@@ -34,8 +15,7 @@
 			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
 			"questionsJSONFile" : "src/main/resources/TaskDesc/SecurePassword.json",
 			"additionalResources" : "",
-			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"
-			
+			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"	
 		},
 		{
 			"name": "Secure Network Connection",
