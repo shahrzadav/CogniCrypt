@@ -1,6 +1,6 @@
 [{
   "id": "0",
-  "helpID": "HybridEncryption_Page0",
+  "helpID": "Encryption_Page0",
   "content": [{
       "id": "0",
       "element":"radio",
@@ -41,10 +41,15 @@
             "option": "hybrid",
             "value": "false"
           }]
-        },
-        ]
-    },
-    {
+        }]
+     }
+  ],
+  "nextID": "1"
+},
+{
+	"id": "1",
+  	"helpID": "Encryption_Page1",
+  	"content": [{
       "id": "1",
       "element": "checkbox",
       "note":"",      
@@ -54,33 +59,36 @@
           "codeDependencies": [{
             "option": "dataType",
             "value": "byte[]"
-          }]
+          }],
+          "nextID": "-1"
         },
         {
           "value": "String",
           "codeDependencies": [{
             "option": "dataType",
             "value": "File"
-          }]
+          }],
+          "nextID": "-1"
         },
         {
           "value": "Byte Array",
           "codeDependencies": [{
             "option": "dataType",
             "value": "String"
-          }]
+          }],
+          "nextID": "-1"
         },
         {
           "value": "Other/Do not know",
+          "isExclusive": true,
           "codeDependencies": [{
             "option": "dataType",
             "value": "Other"
           }],
+          "nextID": "-1",
              "defaultAnswer": true
         }
-      ]
-    }
-  ],
-  "nextID": "-1"
-}
-]
+      ],
+      "nextID": "-1"
+    }]
+}]
