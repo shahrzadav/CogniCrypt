@@ -117,9 +117,9 @@ public class TaskSelectionPage extends WizardPage {
 		Task[] taskdescs = new Task[] { 
 				// TODO we should organize that file correctly and don't do such dirty hacks
 				tasks.get(0),
+				tasks.get(1),
 				tasks.get(2),
-				tasks.get(3),
-				tasks.get(4)};
+				tasks.get(3)};
 		
 		for(Button button : buttons) {
 			button.addListener(SWT.Selection, new SelectionButtonListener(
@@ -273,10 +273,8 @@ public class TaskSelectionPage extends WizardPage {
 					resolvedURL.getPath(),
 					null);
 			} else {
-				resolvedURI = FileLocator.resolve(entry).toURI();
+ 				resolvedURI = FileLocator.resolve(entry).toURI();
 			}
-			
-			System.out.println(resolvedURI.toString());
 			
 			File file = new File(resolvedURI);
 			InputStream is = new FileInputStream(file);
