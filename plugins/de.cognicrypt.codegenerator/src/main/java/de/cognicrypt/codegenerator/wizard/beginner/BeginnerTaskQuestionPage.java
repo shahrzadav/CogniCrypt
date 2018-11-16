@@ -291,6 +291,57 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 
+			case checkbox:
+				final Button[] cbs = new Button[answers.size()];
+				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
+				
+				for(int i = 0; i < answers.size(); i++) {
+					final Answer a = answers.get(i);
+					final Button curCheckbox = new Button(container, SWT.CHECK);
+					curCheckbox.setText(a.getValue());
+					curCheckbox.addSelectionListener(new SelectionAdapter() {
+						
+						@Override
+						public void widgetSelected(final SelectionEvent selectionEvent) {
+							final Button btn = (Button) selectionEvent.getSource();
+							
+							if(btn == curCheckbox) {
+								final boolean isExclusive = a.isExclusive();
+								final boolean isSelected = btn.getSelection();
+
+								if(isExclusive) {
+									BeginnerTaskQuestionPage.this.selectionMap.clear();
+									for(Button b : cbs) {
+										if(b != curCheckbox) {
+											b.setSelection(false);
+										}
+									}
+								} else {
+									exclusiveCbs.forEach(b -> b.setSelection(b == curCheckbox));								
+								}
+								
+								if(isSelected) {
+									BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+									question.setEnteredAnswer(a);
+								}
+							}
+						}
+					});
+					cbs[i] = curCheckbox;
+					if(a.isExclusive()) {
+						exclusiveCbs.add(curCheckbox);
+					}
+				}
+				
+				//added description for questions
+				if (!question.getNote().isEmpty()) {
+					createNote(parent, question);
+				}
+
+				this.finish = true;
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
+				break;
+				
 			case scale:
 				for (int i = 0; i < answers.size(); i++) {
 					if (i == 0) {
