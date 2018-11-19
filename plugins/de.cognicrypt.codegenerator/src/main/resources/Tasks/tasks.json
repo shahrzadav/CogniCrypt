@@ -9,7 +9,7 @@
 			"xslFile" : "src/main/resources/XSLTemplates/Encryption.xsl"
 		},
 		{
-			"name": "Password Hashing",
+			"name": "Secure Password",
 			"description": "Encode Password for Secure Storage",
 			"taskDescription": "Prepare a password for authentication or database storage.",
 			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
