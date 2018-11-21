@@ -85,6 +85,10 @@
             "option": "dataType",
             "value": "Other"
           }],
+          "uiDependencies": [{
+          	"option": "isExclusive",
+          	"value": "true"
+          }],
           "nextID": "-1",
              "defaultAnswer": true
         }
