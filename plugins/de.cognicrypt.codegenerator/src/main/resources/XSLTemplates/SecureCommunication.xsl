@@ -169,7 +169,10 @@ public class Output {
 		
 	}
 }
-</xsl:when><xsl:otherwise>
+</xsl:when>
+<!-- Server code is finished. Remaining code is client: TLS Client or "simply" connect to an HTTPS connection -->
+<!-- TLS client implementation -->
+<xsl:when test="//task/code/https='false'">
 <xsl:result-document href="TLSClient.java">
 package <xsl:value-of select="//task/Package"/>; 
 <xsl:apply-templates select="//Import"/>
@@ -223,7 +226,6 @@ public class TLSClient {
          <xsl:otherwise>port</xsl:otherwise>
 		 </xsl:choose>
          );
-         
 			setCipherSuites();
 			setProtocols();
 			sslsocket.startHandshake();
@@ -317,7 +319,29 @@ public class Output {
 		tls.closeConnection();		
 	}
 }
-</xsl:otherwise></xsl:choose>
+</xsl:when>
+<!-- Code template for the remaining option: HTTPS client connection -->
+<xsl:otherwise>
+<xsl:result-document href="HTTPSConnection.java">
+package <xsl:value-of select="//task/Package"/>; 
+<xsl:apply-templates select="//Import"/>
+/** @author CogniCrypt */
+public class HTTPSConnection {	
+  private static HttpsURLConnection = null;
+
+  public HTTPSConnection(<xsl:choose><xsl:when test="//task/code/host">
+            	"<xsl:value-of select="//task/code/host"/>
+            </xsl:when><xsl:otherwise>
+            	String host
+         </xsl:otherwise></xsl:choose>) {
+  url = new URL(host)
+  /** ToDo Check against documentation because of default implementation of HostnameVerifier and SSLSocketFactory
+  con = new HttpsURLConnection(host)  
+  }
+}
+</xsl:result-document>
+</xsl:otherwise>
+</xsl:choose>
 
 </xsl:if>
 
