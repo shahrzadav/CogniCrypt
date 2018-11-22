@@ -17,11 +17,12 @@ import de.cognicrypt.core.Constants;
 public class Answer {
 
 	private String value;
-	private Boolean isExclusive;
 	
 	private Boolean defaultAnswer;
 	private ArrayList<ClaferDependency> claferDependencies;
 	private ArrayList<CodeDependency> codeDependencies;
+	private ArrayList<UIDependency> uiDependencies;
+	
 	private int nextID = Constants.ANSWER_NO_NEXT_ID;
 
 	public ArrayList<ClaferDependency> getClaferDependencies() {
@@ -38,10 +39,6 @@ public class Answer {
 
 	public String getValue() {
 		return this.value;
-	}
-
-	public Boolean isExclusive() {
-		return this.isExclusive != null && this.isExclusive;
 	}
 	
 	public Boolean isDefaultAnswer() {
@@ -67,10 +64,6 @@ public class Answer {
 	public void setValue(final String value) {
 		this.value = value;
 	}
-
-	public void setIsExclusive(final Boolean isExclusive) {
-		this.isExclusive = isExclusive;
-	}
 	
 	@Override
 	public String toString() {
@@ -78,4 +71,35 @@ public class Answer {
 		return this.value;
 	}
 
+	public ArrayList<UIDependency> getUiDependencies() {
+		return uiDependencies;
+	}
+
+	public void setUiDependencies(ArrayList<UIDependency> uiDependenies) {
+		this.uiDependencies = uiDependenies;
+	}
+
+	public boolean hasUiDependencies() {
+		return uiDependencies != null && uiDependencies.size() > 0;
+	}
+	
+	/**
+	 * Retrieves the value from a specific UIDependency.
+	 * 
+	 * @param option The ui property you want to query.
+	 * @return The option's value if available, else null.
+	 */
+	public String getUIDependency(String option) {
+		if(!hasUiDependencies())
+			return null;
+		
+		String value = null;
+		for(UIDependency dep : uiDependencies) {
+			if(dep.getOption().equals(option)) {
+				value = dep.getValue();
+			}
+		}
+		
+		return value;
+	}
 }

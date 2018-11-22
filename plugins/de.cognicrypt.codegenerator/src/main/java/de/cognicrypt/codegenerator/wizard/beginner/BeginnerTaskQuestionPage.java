@@ -306,7 +306,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 							final Button btn = (Button) selectionEvent.getSource();
 							
 							if(btn == curCheckbox) {
-								final boolean isExclusive = a.isExclusive();
+								final boolean isExclusive = Boolean.parseBoolean(a.getUIDependency("isExclusive"));
 								final boolean isSelected = btn.getSelection();
 
 								if(isExclusive) {
@@ -328,7 +328,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 					cbs[i] = curCheckbox;
-					if(a.isExclusive()) {
+					
+					final String isExlusiveValue = a.getUIDependency("isExclusive");
+					if(Boolean.parseBoolean(isExlusiveValue)) {
 						exclusiveCbs.add(curCheckbox);
 					}
 				}
@@ -341,6 +343,11 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				break;
+			
+			case rbtextgroup:
+				for(int i = 0; i < answers.size(); i ++) {
+					
+				}
 				
 			case scale:
 				for (int i = 0; i < answers.size(); i++) {
