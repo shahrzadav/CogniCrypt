@@ -318,6 +318,8 @@ public class Output {
 		
 		tls.closeConnection();		
 	}
+	
+	
 }
 </xsl:when>
 <!-- Code template for the remaining option: HTTPS client connection -->
@@ -327,7 +329,10 @@ package <xsl:value-of select="//task/Package"/>;
 <xsl:apply-templates select="//Import"/>
 /** @author CogniCrypt */
 public class HTTPSConnection {	
-  private static HttpsURLConnection = null;
+  private static HttpsURLConnection con = null;
+  private static SSLSocket socket = null;
+  private static BufferedReader reader = null;
+  private static BufferedWriter writer = null;
 
   public HTTPSConnection(<xsl:choose><xsl:when test="//task/code/host">
             	"<xsl:value-of select="//task/code/host"/>
@@ -337,7 +342,43 @@ public class HTTPSConnection {
   url = new URL(host)
   /** ToDo Check against documentation because of default implementation of HostnameVerifier and SSLSocketFactory
   con = new HttpsURLConnection(host)  
+  socket = con.getSSLSocketFactory()
+  reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
   }
+  
+  	public void closeConnection() {
+		try {
+		if (!sslsocket.isClosed()) {
+			sslsocket.close();
+		}
+		} catch (IOException ex) {
+			System.out.println("Could not close channel.");
+			ex.printStackTrace();
+		}
+	}
+	
+	public String receiveData() {
+		try {
+			return reader.readLine();
+		} catch (IOException ex) {
+			System.out.println("Receiving data failed.");
+			ex.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean sendData(String content) {
+		try {
+			writer.write(content + "\n");
+			writer.flush();
+			return true;
+		} catch (IOException ex) {
+			System.out.println("Sending data failed.");
+			ex.printStackTrace();
+			return false;
+		}
+	}
+	
 }
 </xsl:result-document>
 </xsl:otherwise>
