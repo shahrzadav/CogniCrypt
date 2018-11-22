@@ -1,11 +1,13 @@
 package de.cognicrypt.codegenerator.wizard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -48,7 +50,6 @@ public class AltConfigWizard extends Wizard {
 	private ClaferModel claferModel;
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	private final HashMap<Integer, IWizardPage> createdPages;
 	private int prevPageId;
 	private List<Integer> protocolList;
 
@@ -64,8 +65,6 @@ public class AltConfigWizard extends Wizard {
 		setWindowTitle("Cryptography Task Configurator");
 		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
-
-		this.createdPages = new HashMap<>();
 	}
 
 	public void addPages() {
@@ -129,10 +128,9 @@ public class AltConfigWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 
-		int nextPageid = -1;
 		// if page was already created, return the existing object
 		if (currentPage instanceof BeginnerTaskQuestionPage) {
-			this.createdPages.put(((BeginnerTaskQuestionPage) currentPage).getCurrentPageID(), currentPage);
+			addPage(currentPage);
 			final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 
 			// remove set constraints if the user press the previous button
@@ -141,7 +139,7 @@ public class AltConfigWizard extends Wizard {
 				if (protocolList.size() > 2) {
 					if (protocolList.get(protocolList.size() - 3) == beginnerTaskQuestionPage.getCurrentPageID()) {
 						if (this.constraints != null) {
-							BeginnerTaskQuestionPage previousPage = (BeginnerTaskQuestionPage) createdPages.get(prevPageId);
+							BeginnerTaskQuestionPage previousPage = (BeginnerTaskQuestionPage) getPages()[prevPageId];
 							Set<Question> previousPageQuestions = previousPage.getMap().keySet();
 							for (Question q : previousPageQuestions) {
 								this.constraints.remove(q);
@@ -155,18 +153,25 @@ public class AltConfigWizard extends Wizard {
 			}
 
 			if (this.beginnerQuestions.hasMorePages()) {
+				int nextPageid =  beginnerTaskQuestionPage.getPageNextID();
+				Optional<IWizardPage> nextPage = Arrays.asList(getPages()).stream().filter(e -> e instanceof BeginnerTaskQuestionPage && ((BeginnerTaskQuestionPage)e).getCurrentPageID() == nextPageid && ((BeginnerTaskQuestionPage)e).isActive()).findFirst();
 
-				nextPageid = beginnerTaskQuestionPage.getPageNextID();
-			}
-			if (this.createdPages.containsKey(nextPageid)) {
-				return this.createdPages.get(nextPageid);
+				if (nextPage.isPresent()) {
+					return nextPage.get();
+				}
+			
 			}
 		}
 		if (currentPage instanceof TaskSelectionPage) {
 			prevPageId = 0;
 			this.protocolList = new ArrayList<>();
 			protocolList.add(0);
-			this.createdPages.clear();
+			
+			Arrays.asList(getPages()).parallelStream().forEach(e -> { 
+			if (e instanceof BeginnerTaskQuestionPage) {
+				((BeginnerTaskQuestionPage) e).setPageInactive();
+			}
+			});
 		}
 
 		// if page is shown for the first time, create the new object
@@ -266,10 +271,7 @@ public class AltConfigWizard extends Wizard {
 
 			instanceGenerator.generateInstances(this.constraints);
 
-		} else if (currentPage instanceof LocatorPage) {
-			
-		}
-
+		} 
 		return currentPage;
 	}
 
