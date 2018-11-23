@@ -10,19 +10,11 @@
 
 package de.cognicrypt.codegenerator.actions;
 
-import org.eclipse.jdt.internal.ui.wizards.NewClassCreationWizard;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.IWorkbenchWizard;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.wizards.preferences.PreferencesImportWizard;
-import org.eclipse.ui.wizards.newresource.BasicNewFileResourceWizard;
 
 import de.cognicrypt.codegenerator.wizard.AltConfigWizard;
 import de.cognicrypt.codegenerator.wizard.CogniCryptWizardDialog;

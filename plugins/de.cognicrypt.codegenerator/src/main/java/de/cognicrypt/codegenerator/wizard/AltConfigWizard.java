@@ -1,18 +1,12 @@
 package de.cognicrypt.codegenerator.wizard;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.clafer.ast.AstConcreteClafer;
 import org.clafer.instance.InstanceClafer;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -25,21 +19,16 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.DeveloperProject;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
-import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModelUtils;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.ClaferDependency;
-import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
-import de.cognicrypt.codegenerator.wizard.advanced.AdvancedUserValueSelectionPage;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerModeQuestionnaire;
 import de.cognicrypt.codegenerator.wizard.beginner.BeginnerTaskQuestionPage;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.core.Constants.GUIElements;
 import de.cognicrypt.utils.Utils;
 
 public class AltConfigWizard extends Wizard {
@@ -111,7 +100,7 @@ public class AltConfigWizard extends Wizard {
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
 
-			if (this.beginnerQuestions.getPages().size() > 0) {
+			if (this.beginnerQuestions.hasPages()) {
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
 				addPage(this.preferenceSelectionPage);
 				return this.preferenceSelectionPage;
@@ -149,7 +138,7 @@ public class AltConfigWizard extends Wizard {
 				final String message = Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
 				MessageDialog.openError(new Shell(), "Error", message);
 			}
-		}	 
+		}
 		return currentPage;
 	}
 
