@@ -102,4 +102,30 @@ public class Answer {
 		
 		return value;
 	}
+
+	public Answer combineWith(Answer a) {
+		Answer combined = new Answer();
+		combined.setValue(this.value + " + " + a.getValue());
+		
+		ArrayList<CodeDependency> cpD = new ArrayList<CodeDependency>();
+		if (this.codeDependencies != null) {
+			cpD.addAll(this.codeDependencies);
+		}
+		if (a.getCodeDependencies() != null) {
+			cpD.addAll(a.getCodeDependencies());
+		}
+		combined.setCodeDependencies(cpD);
+
+		ArrayList<ClaferDependency> clD = new ArrayList<ClaferDependency>();
+		if (this.claferDependencies != null) {
+			clD.addAll(this.claferDependencies);
+		}
+		if (a.getClaferDependencies() != null) {
+			clD.addAll(a.getClaferDependencies());
+		}
+		combined.setClaferDependencies(clD);
+		
+		return combined;
+	}
+
 }

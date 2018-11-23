@@ -313,16 +313,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						groupLabel.setText(labelText);
 						Text pathText = new Text(container, SWT.FILL);
 						pathText.setEnabled(false);
-						
-						
-						
 					}
-					
-					
 				}
-				
-			
-				
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 				
@@ -334,7 +326,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					final Answer a = answers.get(i);
 					final Button curCheckbox = new Button(container, SWT.CHECK);
 					curCheckbox.setText(a.getValue());
-					curCheckbox.setSelection(a.isDefaultAnswer());
+					
 					curCheckbox.addSelectionListener(new SelectionAdapter() {
 						
 						@Override
@@ -346,6 +338,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 								final boolean isSelected = btn.getSelection();
 
 								if(isExclusive) {
+									question.setEnteredAnswer(null);
 									BeginnerTaskQuestionPage.this.selectionMap.clear();
 									for(Button b : cbs) {
 										if(b != curCheckbox) {
@@ -357,8 +350,16 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 								}
 								
 								if(isSelected) {
-									BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
-									question.setEnteredAnswer(a);
+									Answer prevAns = question.getEnteredAnswer();
+									if (prevAns != null && !Boolean.parseBoolean(prevAns.getUIDependency("isExclusive"))) {
+										Answer combinedAnswer = prevAns.combineWith(a);
+										question.setEnteredAnswer(combinedAnswer);
+										BeginnerTaskQuestionPage.this.selectionMap.put(question, combinedAnswer);
+										
+									} else {
+										question.setEnteredAnswer(a);
+										BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
+									}
 								}
 								
 								finish = cbs.stream().anyMatch(e -> e.getSelection());
@@ -370,6 +371,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 						}
 					});
 					cbs.add(curCheckbox);
+					curCheckbox.setSelection(a.isDefaultAnswer());
+					question.setEnteredAnswer(a);
+					BeginnerTaskQuestionPage.this.selectionMap.put(question, a);
 					
 					final String isExlusiveValue = a.getUIDependency("isExclusive");
 					if(Boolean.parseBoolean(isExlusiveValue)) {
