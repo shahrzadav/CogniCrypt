@@ -257,14 +257,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				}
 				break;
 			case radio:
-				final Button[] radioButton = new Button[answers.size()];
+				final Button[] radioButtons = new Button[answers.size()];
 				for (int i = 0; i < answers.size(); i++) {
 					final int count = i;
 					final String ans = answers.get(i).getValue();
-					radioButton[i] = new Button(container, SWT.RADIO);
-					radioButton[i].setText(ans);
+					radioButtons[i] = new Button(container, SWT.RADIO);
+					radioButtons[i].setText(ans);
 					new Label(container, SWT.NONE);
-					radioButton[i].addSelectionListener(new SelectionAdapter() {
+					radioButtons[i].addSelectionListener(new SelectionAdapter() {
 
 						@Override
 						public void widgetSelected(final SelectionEvent e) {
@@ -281,8 +281,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					evalAnswer = question.getDefaultAnswer();
 				}
 				for (int i = 0; i < answers.size(); i++) {
-					if (radioButton[i].getText().equals(evalAnswer.getValue())) {
-						radioButton[i].setSelection(true);
+					if (radioButtons[i].getText().equals(evalAnswer.getValue())) {
+						radioButtons[i].setSelection(true);
 						BeginnerTaskQuestionPage.this.selectionMap.put(question, evalAnswer);
 						question.setEnteredAnswer(evalAnswer);
 					}
@@ -291,6 +291,32 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 
+			case rbtextgroup:
+				for(Answer answer: answers) {
+					String rows = answer.getUIDependency("rows");
+					int numRows = (rows == null)? 0 : Integer.parseInt(rows);
+					Button radioButton = new Button(container, SWT.RADIO);
+					radioButton.setText(answer.getValue());
+					for(int row = 1; row <= numRows; row++) {
+						String labelOption = "Label" + row;
+						String labelText = answer.getUIDependency(labelOption);
+						Label groupLabel = new Label(container, SWT.NONE);
+						groupLabel.setText(labelText);
+						Text pathText = new Text(container, SWT.FILL);
+						pathText.setEnabled(false);
+						
+						
+						
+					}
+					
+					
+				}
+				
+			
+				
+				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
+				break;
+				
 			case checkbox:
 				final Button[] cbs = new Button[answers.size()];
 				final List<Button> exclusiveCbs = new ArrayList<Button>(answers.size());
@@ -344,11 +370,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
 				break;
 			
-			case rbtextgroup:
-				for(int i = 0; i < answers.size(); i ++) {
-					
-				}
-				
 			case scale:
 				for (int i = 0; i < answers.size(); i++) {
 					if (i == 0) {
@@ -1009,6 +1030,27 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		if (question.getDefaultAnswer().getCodeDependencies() != null) {
 			inputField.setText(question.getDefaultAnswer().getCodeDependencies().get(0).getValue());
 		}
-
 	}
 }
+
+class RadioButtonGroup {
+	
+	private Button radioButton;
+	private Text[] textfields;
+	private Button[] browseButtons;
+	
+	public RadioButtonGroup() {
+		
+	}
+	
+	public void toggle() {
+		boolean isActive = radioButton.getSelection(); 
+		for(Text t : textfields) {
+			t.setEnabled(isActive);
+		}
+		
+		for(Button b: browseButtons) {
+			b.setEnabled(isActive);
+		}
+	}
+};
