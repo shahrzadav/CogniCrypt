@@ -3,6 +3,8 @@
 <xsl:output method="text"/>
 <xsl:template match="/">
 
+<xsl:variable name="Rounds"> <xsl:value-of select="//task/algorithm[@type='KeyDerivationAlgorithm']/iterations"/> </xsl:variable>
+
 <xsl:if test="//task/algorithm[@type='SymmetricBlockCipher']">
 <xsl:result-document href="SymmetricEnc.java">
 package <xsl:value-of select="//task/Package"/>; 
@@ -143,7 +145,7 @@ public class PublicKeyEnc {
 </xsl:result-document>
 </xsl:if>
 
-<xsl:if test="//task[@description='HybridEncryption']">
+<xsl:if test="//task[@description='Encryption']">
 
 package <xsl:value-of select="//Package"/>; 
 <xsl:apply-templates select="//Import"/>	
@@ -160,15 +162,9 @@ public class Output {
         <xsl:otherwise>
         byte[] ciphertext = symEnc.encrypt(data, sessionKey);</xsl:otherwise>
         </xsl:choose>
-		<xsl:choose><xsl:when test="//task/code/keypair='true'">
 		KeyPair keyPair = km.generateKeyPair(<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/keySizePub"/>);
-		</xsl:when></xsl:choose>
 		PublicKeyEnc keyEnc = new PublicKeyEnc();		
-		<xsl:choose><xsl:when test="//task/code/keypair='true'">
-		byte[] encSessionKey = keyEnc.encrypt(sessionKey,keyPair.getPublic());</xsl:when>
-		<xsl:otherwise>
-        byte[] encSessionKey = keyEnc.encrypt(sessionKey,publicKey);</xsl:otherwise>
-        </xsl:choose>
+        
         
         </xsl:when><xsl:otherwise>
         SecretKey encryptionKey = km.getKey(pwd);
@@ -207,13 +203,12 @@ public class KeyManagment{
 		kg.init(keySize);
 		return kg.generateKey();
 	}
-	<xsl:if test="//task/code/keypair='true'">	
+	
 	public KeyPair generateKeyPair(int keySize) throws NoSuchAlgorithmException{
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("<xsl:value-of select="//task/algorithm[@type='AsymmetricCipher']/name"/>");
 		kpg.initialize(keySize);
         return kpg.generateKeyPair();
 	}
-	</xsl:if>
 	</xsl:if>
 }
 </xsl:result-document>

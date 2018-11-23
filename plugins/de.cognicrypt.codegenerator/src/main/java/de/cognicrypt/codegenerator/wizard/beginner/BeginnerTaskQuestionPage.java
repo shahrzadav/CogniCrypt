@@ -185,7 +185,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			if (answer == null || answer.getValue().isEmpty()) {
 				return false;
 			}
-			if (Arrays.asList((new GUIElements[] { GUIElements.button, GUIElements.itemselection, GUIElements.radio, GUIElements.scale })).contains(question.getElement())) {
+			if (Arrays.asList((new GUIElements[] { GUIElements.button, GUIElements.itemselection, GUIElements.radio, GUIElements.scale, GUIElements.checkbox })).contains(question.getElement())) {
 				return this.finish;
 			}
 		}
@@ -335,8 +335,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 									question.setEnteredAnswer(a);
 								}
 								
-//								finish = cbs.stream().anyMatch(e -> e.getSelection());
-//								BeginnerTaskQuestionPage.this.setPageComplete(finish);
+								finish = cbs.stream().anyMatch(e -> e.getSelection());
+								BeginnerTaskQuestionPage.this.setPageComplete(isPageComplete());
 								
 								
 							}

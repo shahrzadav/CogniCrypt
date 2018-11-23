@@ -50,8 +50,6 @@ public class AltConfigWizard extends Wizard {
 	private ClaferModel claferModel;
 	private HashMap<Question, Answer> constraints;
 	private BeginnerModeQuestionnaire beginnerQuestions;
-	private int prevPageId;
-	private List<Integer> protocolList;
 
 	public AltConfigWizard() {
 		super();
@@ -65,6 +63,7 @@ public class AltConfigWizard extends Wizard {
 		setWindowTitle("Cryptography Task Configurator");
 		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
+		this.constraints = new HashMap<>();
 	}
 
 	public void addPages() {
@@ -93,31 +92,6 @@ public class AltConfigWizard extends Wizard {
 	}
 
 	/**
-	 * Creates a new {@link BeginnerTaskQuestionPage}.
-	 * 
-	 * @param curPage
-	 *        Current page
-	 * @param beginnerQuestionnaire
-	 *        updated this variable from a list of questions to have access to the method to get specific Questions.
-	 */
-	private void createBeginnerPage(final Page curPage, final BeginnerModeQuestionnaire beginnerQuestionnaire) {
-		List<String> selection = null;
-		if (curPage.getContent().size() == 1) {
-			final Question curQuestion = curPage.getContent().get(0);
-			if (curQuestion.getElement().equals(GUIElements.itemselection)) {
-				selection = new ArrayList<>();
-				for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-					if (childClafer.getSuperClafer().getName().endsWith(curQuestion.getSelectionClafer())) {
-						selection.add(ClaferModelUtils.removeScopePrefix(childClafer.getName()));
-					}
-				}
-			}
-		}
-		// Pass the questionnaire instead of the all of the questions.
-		this.preferenceSelectionPage = new BeginnerTaskQuestionPage(curPage, this.beginnerQuestions.getTask(), beginnerQuestionnaire, selection);
-	}
-
-	/**
 	 * This method returns the next page. If current page is task list or any but the last question page, the first/next question page is returned. If the current page is the last
 	 * question page, the instance list page is returned.
 	 *
@@ -128,150 +102,54 @@ public class AltConfigWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(final IWizardPage currentPage) {
 
-		// if page was already created, return the existing object
-		if (currentPage instanceof BeginnerTaskQuestionPage) {
-			addPage(currentPage);
-			final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
-
-			// remove set constraints if the user press the previous button
-			if (prevPageId != beginnerTaskQuestionPage.getCurrentPageID()) {
-				protocolList.add(beginnerTaskQuestionPage.getCurrentPageID());
-				if (protocolList.size() > 2) {
-					if (protocolList.get(protocolList.size() - 3) == beginnerTaskQuestionPage.getCurrentPageID()) {
-						if (this.constraints != null) {
-							BeginnerTaskQuestionPage previousPage = (BeginnerTaskQuestionPage) getPages()[prevPageId];
-							Set<Question> previousPageQuestions = previousPage.getMap().keySet();
-							for (Question q : previousPageQuestions) {
-								this.constraints.remove(q);
-							}
-							protocolList.remove(protocolList.size() - 1);	//remove last page index
-							protocolList.remove(protocolList.size() - 1);	//remove duplicate
-						}
-					}
-				}
-				prevPageId = beginnerTaskQuestionPage.getCurrentPageID();
-			}
-
-			if (this.beginnerQuestions.hasMorePages()) {
-				int nextPageid =  beginnerTaskQuestionPage.getPageNextID();
-				Optional<IWizardPage> nextPage = Arrays.asList(getPages()).stream().filter(e -> e instanceof BeginnerTaskQuestionPage && ((BeginnerTaskQuestionPage)e).getCurrentPageID() == nextPageid && ((BeginnerTaskQuestionPage)e).isActive()).findFirst();
-
-				if (nextPage.isPresent()) {
-					return nextPage.get();
-				}
-			
-			}
+		if (checkifInUpdateRound()) {
+			return currentPage;
 		}
-		if (currentPage instanceof TaskSelectionPage) {
-			prevPageId = 0;
-			this.protocolList = new ArrayList<>();
-			protocolList.add(0);
-			
-			Arrays.asList(getPages()).parallelStream().forEach(e -> { 
-			if (e instanceof BeginnerTaskQuestionPage) {
-				((BeginnerTaskQuestionPage) e).setPageInactive();
-			}
-			});
-		}
-
-		// if page is shown for the first time, create the new object
 		final Task selectedTask = this.taskListPage.getSelectedTask();
-		if (currentPage == this.taskListPage && this.taskListPage.isPageComplete()) {
+		if (currentPage instanceof TaskSelectionPage) {
 			this.claferModel = new ClaferModel(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile()));
-
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
+
 			if (this.beginnerQuestions.getPages().size() > 0) {
 				this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.nextPage(), this.beginnerQuestions.getTask(), null);
-				if (this.constraints != null) {
-					this.constraints = null;
-				}
-				if (this.preferenceSelectionPage != null) {
-					addPage(this.preferenceSelectionPage);
-				}
+				addPage(this.preferenceSelectionPage);
 				return this.preferenceSelectionPage;
-				// Return the Locator page if no questions exists.
-				// TODO Remove code duplication. 
 			} else {
 				this.locatorPage = new LocatorPage("Locator");
 				addPage(this.locatorPage);
 				return this.locatorPage;
 			}
-		} else if (currentPage instanceof BeginnerTaskQuestionPage) {
-			/**
-			 * If current page is either question or properties page (in Advanced mode)
-			 */
-			if (this.constraints == null) {
-				this.constraints = new HashMap<>();
-			}
-
-			final BeginnerTaskQuestionPage beginnerTaskQuestionPage = (BeginnerTaskQuestionPage) currentPage;
-			final HashMap<Question, Answer> selectionMap = beginnerTaskQuestionPage.getMap();
-
-			// Looping through all the entries that were added to the BeginnerTaskQuestionPage
-			for (final Entry<Question, Answer> entry : selectionMap.entrySet()) {
-				if (entry.getKey().getElement().equals(GUIElements.itemselection)) {
-					handleItemSelection(entry);
-				}
-				this.constraints.put(entry.getKey(), entry.getValue());
-			}
-
-			if (this.beginnerQuestions.hasMorePages()) {
-
-				final int nextID = beginnerTaskQuestionPage.getPageNextID();
-
-				if (nextID > -1) {
-					final Page curPage = this.beginnerQuestions.setPageByID(nextID);
-					// Pass the variable for the questionnaire here instead of all the questions.
-					createBeginnerPage(curPage, this.beginnerQuestions);
-					if (checkifInUpdateRound()) {
-						this.beginnerQuestions.previousPage();
-					}
-
-					final IWizardPage[] pages = getPages();
-					for (int i = 1; i < pages.length; i++) {
-						if (!(pages[i] instanceof BeginnerTaskQuestionPage)) {
-							continue;
-						}
-						final BeginnerTaskQuestionPage oldPage = (BeginnerTaskQuestionPage) pages[i];
-						if (oldPage.equals(this.preferenceSelectionPage)) {
-							return oldPage;
-						}
-					}
-					if (this.preferenceSelectionPage != null) {
-						addPage(this.preferenceSelectionPage);
-					}
-					return this.preferenceSelectionPage;
-				}
-			}
-
-			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
-				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
-
-			instanceGenerator.generateInstances(this.constraints);
-			if (currentPage instanceof BeginnerTaskQuestionPage) {
-				//default algorithm page will be added only for beginner mode
-				if (instanceGenerator.getNoOfInstances() != 0) {
-					this.locatorPage = new LocatorPage("Locator");
-					addPage(this.locatorPage);
-					return this.locatorPage;
-
-				} else {
-					if ("nextPressed".equalsIgnoreCase(Thread.currentThread().getStackTrace()[3].getMethodName())) {
-						final String message = Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
-						MessageDialog.openError(new Shell(), "Error", message);
-					}
-				}
-			}
 		}
-		//adding instance details page after default algorithm page in beginner mode
-		else if (currentPage instanceof DefaultAlgorithmPage) {
+
+		//Only case that is left: BeginnerTaskQuestionPage
+		BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
+		final HashMap<Question, Answer> curQuestionAnswerMap = curQuestionPage.getMap();
+
+		for (final Entry<Question, Answer> entry : curQuestionAnswerMap.entrySet()) {
+			this.constraints.put(entry.getKey(), entry.getValue());
+		}
+
+		int nextPageid = curQuestionPage.getPageNextID();
+		if (this.beginnerQuestions.hasMorePages() && nextPageid > -1) {
+			this.preferenceSelectionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getPageByID(nextPageid), this.beginnerQuestions.getTask(), null);
+			addPage(this.preferenceSelectionPage);
+			return this.preferenceSelectionPage;
+		} else {
 			final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 				.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
 
 			instanceGenerator.generateInstances(this.constraints);
 
-		} 
+			if (instanceGenerator.getNoOfInstances() > 0) {
+				this.locatorPage = new LocatorPage("Locator");
+				addPage(this.locatorPage);
+				return this.locatorPage;
+			} else {
+				final String message = Constants.NO_POSSIBLE_COMBINATIONS_BEGINNER;
+				MessageDialog.openError(new Shell(), "Error", message);
+			}
+		}	 
 		return currentPage;
 	}
 
@@ -285,42 +163,24 @@ public class AltConfigWizard extends Wizard {
 	 */
 	@Override
 	public IWizardPage getPreviousPage(final IWizardPage currentPage) {
-		final boolean lastPage = currentPage instanceof InstanceListPage || currentPage instanceof DefaultAlgorithmPage;
-		if (!checkifInUpdateRound() && (currentPage instanceof AdvancedUserValueSelectionPage || currentPage instanceof BeginnerTaskQuestionPage || lastPage)) {
-			if (!this.beginnerQuestions.isFirstPage()) {
-				this.beginnerQuestions.previousPage();
+		if (!checkifInUpdateRound()) {
+			IWizardPage[] pages = getPages();
+			for (int i = 0; i < pages.length; i++) {
+				if (currentPage.equals(pages[i])) {
+					if (currentPage instanceof BeginnerTaskQuestionPage) {
+						((BeginnerTaskQuestionPage) currentPage).setPageInactive();
+					}
+					BeginnerTaskQuestionPage prevPage = (BeginnerTaskQuestionPage) pages[i - 1];
+					for (Entry<Question, Answer> quesAns : prevPage.getSelection().entrySet()) {
+						this.constraints.remove(quesAns.getKey());
+					}
+					return prevPage;
+				}
 			}
 
 		}
 
 		return super.getPreviousPage(currentPage);
-	}
-
-	private void handleItemSelection(final Entry<Question, Answer> entry) {
-		final Answer ans = entry.getValue();
-		ArrayList<ClaferDependency> claferDependencies = ans.getClaferDependencies();
-		if (null == claferDependencies) {
-			claferDependencies = new ArrayList<>();
-		}
-
-		String operand = "";
-		for (final AstConcreteClafer childClafer : this.claferModel.getModel().getRoot().getSuperClafer().getChildren()) {
-			if (childClafer.getSuperClafer().getName().endsWith("Task")) {
-				for (final AstConcreteClafer grandChildClafer : childClafer.getChildren()) {
-					if (grandChildClafer.getRef().getTargetType().getName().endsWith(entry.getKey().getSelectionClafer())) {
-						operand = ClaferModelUtils.removeScopePrefix(grandChildClafer.getName());
-						break;
-					}
-				}
-			}
-		}
-		final ClaferDependency cd = new ClaferDependency();
-		cd.setAlgorithm(this.taskListPage.getSelectedTask().getName());
-		cd.setOperand(operand);
-		cd.setOperator("++");
-		cd.setValue(ans.getValue());
-		claferDependencies.add(cd);
-		ans.setClaferDependencies(claferDependencies);
 	}
 
 	/**
