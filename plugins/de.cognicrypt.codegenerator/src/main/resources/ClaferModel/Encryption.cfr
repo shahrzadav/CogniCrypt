@@ -120,7 +120,6 @@ RSA: AsymmetricCipher
     [description = "RSA Algorithm"]
     [mode = ECB]
     [keySizePub = 2048 || keySizePub = 4096]
-    [keySizePub = 2048 => performance = Slow && algorithmSecurity = Medium && padding = OAEPWithSHA1]
     [keySizePub > 2048 => performance = Slow && algorithmSecurity = Strong && padding = OAEPWithSHA256]	    
     [keySizeSec = keySizePub ]
 	
