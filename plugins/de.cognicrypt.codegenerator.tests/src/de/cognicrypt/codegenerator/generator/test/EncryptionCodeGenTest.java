@@ -30,11 +30,8 @@ public class EncryptionCodeGenTest {
 	Logger log = Logger.getLogger(GenerationTest.class.getName());
 	IJavaProject testJavaProject;
 	CodeGenerator generatorEnc;
-	CodeGenerator generatorSecPassword;
 	Task encTask;
-	Task secPasswordTask;
 	Configuration configEnc;
-	Configuration configSecPassword;
 	DeveloperProject developerProject;
 	static int counter = 0;
 	IResource targetFile;
