@@ -20,13 +20,12 @@ import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.utils.DeveloperProject;
 
-public class SecurePassword {
-	
+public class DigitalSigniture {
 	Logger log = Logger.getLogger(GenerationTest.class.getName());
 	IJavaProject testJavaProject;
-	CodeGenerator generatorSecPassword;
-	Task secPasswordTask;
-	Configuration configSecPassword;
+	CodeGenerator generatorDigSigniture;
+	Task digSignitureTask;
+	Configuration configDigSigniture;
 	DeveloperProject developerProject;
 	IResource targetFile;
 	
@@ -39,17 +38,17 @@ public class SecurePassword {
 	public void setUp() throws Exception {
 		this.testJavaProject = TestUtils.createJavaProject("TestProject");
 		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
-		this.secPasswordTask = TestUtils.getTask("SecurePassword");
-		this.generatorSecPassword = new CrySLBasedCodeGenerator(targetFile);
-		this.developerProject = this.generatorSecPassword.getDeveloperProject();
+		this.digSignitureTask = TestUtils.getTask("DigitalSignatures");
+		this.generatorDigSigniture = new CrySLBasedCodeGenerator(targetFile);
+		this.developerProject = this.generatorDigSigniture.getDeveloperProject();
 	}
 	@Test
-	public void testCodeGenerationSecurePassword() throws CoreException, IOException {
+	public void testCodeGenerationEncryption() throws CoreException, IOException {
 		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
 		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
-		this.configSecPassword = TestUtils.createCrySLConfiguration("securepassword", testClassUnit.getResource(), generatorSecPassword, this.developerProject);
-		final boolean encCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
+		this.configDigSigniture = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(), generatorDigSigniture, this.developerProject);
+		final boolean encCheck = this.generatorDigSigniture.generateCodeTemplates(this.configDigSigniture, this.digSignitureTask.getAdditionalResources());
 		assertTrue(encCheck);
 		
 	}
