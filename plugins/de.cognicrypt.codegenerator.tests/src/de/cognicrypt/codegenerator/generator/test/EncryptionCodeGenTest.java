@@ -33,8 +33,8 @@ public class EncryptionCodeGenTest {
 	Task encTask;
 	Configuration configEnc;
 	DeveloperProject developerProject;
-	static int counter = 0;
 	IResource targetFile;
+	ICompilationUnit testClassUnit;
 	
 	@After
 	public void tearDown() throws CoreException {
@@ -43,17 +43,17 @@ public class EncryptionCodeGenTest {
 
 	@Before
 	public void setUp() throws Exception {
-		GenerationTest.counter++;
-		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
+		this.testJavaProject = TestUtils.createJavaProject("TestProject");
 		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
 		this.encTask = TestUtils.getTask("Encryption");
 		this.generatorEnc = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorEnc.getDeveloperProject();
+		this.testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
+		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", this.testClassUnit);
+
 	}
 	@Test
 	public void testCodeGenerationEncryption() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
 		this.configEnc = TestUtils.createCrySLConfiguration("encryption", testClassUnit.getResource(), generatorEnc, this.developerProject);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
@@ -64,9 +64,6 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationEncryptionHybrid() throws CoreException, IOException {
 
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
-
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybrid", testClassUnit.getResource(), generatorEnc, this.developerProject);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
@@ -74,8 +71,6 @@ public class EncryptionCodeGenTest {
 	}
 	@Test
 	public void testCodeGenerationEncryptionFiles() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionfiles", testClassUnit.getResource(), generatorEnc, this.developerProject);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
@@ -85,8 +80,6 @@ public class EncryptionCodeGenTest {
 	
 	@Test
 	public void testCodeGenerationEncryptionHybridFiles() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybridfiles", testClassUnit.getResource(), generatorEnc, this.developerProject);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
@@ -96,8 +89,6 @@ public class EncryptionCodeGenTest {
 	
 	@Test
 	public void testCodeGenerationEncryptionHybridStrings() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybridstrings", testClassUnit.getResource(), generatorEnc, this.developerProject);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
@@ -107,8 +98,6 @@ public class EncryptionCodeGenTest {
 	
 	@Test
 	public void testCodeGenerationEncryptionStrings() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionstrings", testClassUnit.getResource(), generatorEnc, this.developerProject);
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
@@ -116,4 +105,12 @@ public class EncryptionCodeGenTest {
 		
 	}
 	
+	@Test
+	public void testCodeGenerationSecretKeyEncryption() throws CoreException, IOException {
+
+		this.configEnc = TestUtils.createCrySLConfiguration("secretkeyencryption", testClassUnit.getResource(), generatorEnc, this.developerProject);
+		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
+		assertTrue(encCheck);
+		
+	}
 }
