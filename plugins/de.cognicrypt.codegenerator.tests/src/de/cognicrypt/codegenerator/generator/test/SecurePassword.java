@@ -28,7 +28,6 @@ public class SecurePassword {
 	Task secPasswordTask;
 	Configuration configSecPassword;
 	DeveloperProject developerProject;
-	static int counter = 0;
 	IResource targetFile;
 	
 	@After
@@ -38,15 +37,14 @@ public class SecurePassword {
 
 	@Before
 	public void setUp() throws Exception {
-		GenerationTest.counter++;
-		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
+		this.testJavaProject = TestUtils.createJavaProject("TestProject");
 		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
 		this.generatorSecPassword = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorSecPassword.getDeveloperProject();
 	}
 	@Test
-	public void testCodeGenerationEncryption() throws CoreException, IOException {
+	public void testCodeGenerationSecurePassword() throws CoreException, IOException {
 		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
 		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
