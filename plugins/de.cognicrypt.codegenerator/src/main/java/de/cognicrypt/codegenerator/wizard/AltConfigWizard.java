@@ -110,6 +110,7 @@ public class AltConfigWizard extends Wizard {
 		}
 		if (currentPage instanceof TaskSelectionPage) {
 			selectedTask = ((TaskSelectionPage) currentPage).getSelectedTask();
+//			System.out.println("thS IS THE CURR PAGE in nextPage: " + currentPage);
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
 
@@ -123,9 +124,10 @@ public class AltConfigWizard extends Wizard {
 		}
 
 		//Only case that is left: BeginnerTaskQuestionPage
+		System.out.println("thS IS THE CURR PAGE in nextPage: " + currentPage);
 		final BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 		final HashMap<Question, Answer> curQuestionAnswerMap = curQuestionPage.getMap();
-
+//		System.out.println("Q and A MAP:   "+curQuestionAnswerMap);
 		for (final Entry<Question, Answer> entry : curQuestionAnswerMap.entrySet()) {
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
@@ -136,8 +138,10 @@ public class AltConfigWizard extends Wizard {
 			addPage(questionPage);
 			return questionPage;
 		} else {
+			System.out.println("NO TASK LEFT---- ----------");
 			CodeGenerators generator = selectedTask.getCodeGen();
 			if (generator == CodeGenerators.CrySL) {
+				System.out.println("here is th TASK: " + selectedTask.getName());
 				String selectedTemplate = selectedTask.getCodeTemplate();
 				for (Answer resp : this.constraints.values()) {
 					selectedTemplate += resp.getOption();
@@ -233,6 +237,7 @@ public class AltConfigWizard extends Wizard {
 			switch (genKind) {
 				case CrySL:
 					CrySLBasedCodeGenerator.clearParameterCache();
+					System.out.println("is the template CORRECT: " + selectedTask.getName());
 					File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
 					codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject()
@@ -255,6 +260,7 @@ public class AltConfigWizard extends Wizard {
 					break;
 				case XSL:
 					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
+//					System.out.println("is the template CORRECT XSL: " + selectedTask.getModelFile());
 					final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 						.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
 					instanceGenerator.generateInstances(this.constraints);
