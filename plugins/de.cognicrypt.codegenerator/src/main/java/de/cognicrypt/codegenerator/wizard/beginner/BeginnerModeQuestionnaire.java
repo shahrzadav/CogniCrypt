@@ -93,6 +93,7 @@ public class BeginnerModeQuestionnaire {
 	 * @return Return whether there are more pages.
 	 */
 	public boolean hasMorePages() {
+		System.out.println("page id? "+ this.pageID);
 		return this.pageID < this.pageList.size();
 	}
 

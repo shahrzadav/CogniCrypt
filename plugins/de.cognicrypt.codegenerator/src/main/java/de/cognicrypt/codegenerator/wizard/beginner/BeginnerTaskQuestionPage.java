@@ -66,7 +66,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	private Composite container;
 	private int count = 0;
 	private boolean isActive = true;
-
+	private boolean Test = false;
+	private int nextID = 0;
 	public int getCurrentPageID() {
 		return this.page.getId();
 	}
@@ -782,8 +783,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	public int getPageMap() {
 		return this.page.getId();
 	}
+	
+	//1. step we start from here 
+	public void setPageMap(int Id) {
+		this.page.setId(Id);
+	}
 
 	public int getPageNextID() {
+		if (this.Test = false) {
 		for (final Entry<Question, Answer> entry : this.selectionMap.entrySet()) {
 			final int nextID = entry.getValue().getNextID();
 			if (nextID > -2) {
@@ -791,8 +798,21 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			}
 		}
 		return this.page.getNextID();
+		}else {
+			return this.nextID;
+		}
+	}
+	
+	public void setPageNextID(int Id) {
+		this.nextID = Id;
+	}
+	public void setTestMode() {
+		this.Test = true;
 	}
 
+	public void setSelectionMap(Question quest, Answer answ) {
+		this.selectionMap.put(quest, answ);
+	}
 	private Composite getPanel(final Composite parent) {
 		final Composite titledPanel = new Composite(parent, SWT.NONE);
 		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));

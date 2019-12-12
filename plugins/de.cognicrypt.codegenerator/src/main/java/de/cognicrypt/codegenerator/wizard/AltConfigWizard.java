@@ -110,8 +110,9 @@ public class AltConfigWizard extends Wizard {
 		}
 		if (currentPage instanceof TaskSelectionPage) {
 			selectedTask = ((TaskSelectionPage) currentPage).getSelectedTask();
-//			System.out.println("thS IS THE CURR PAGE in nextPage: " + currentPage);
+			System.out.println("JSON FILe: " + selectedTask.getQuestionsJSONFile());
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
+			
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
 
 			if (this.beginnerQuestions.hasPages()) {
@@ -124,16 +125,20 @@ public class AltConfigWizard extends Wizard {
 		}
 
 		//Only case that is left: BeginnerTaskQuestionPage
-		System.out.println("thS IS THE CURR PAGE in nextPage: " + currentPage);
+		System.out.println("thS IS THE CURR PAGE in nextPage: " + currentPage.getName());
 		final BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 		final HashMap<Question, Answer> curQuestionAnswerMap = curQuestionPage.getMap();
-//		System.out.println("Q and A MAP:   "+curQuestionAnswerMap);
+		System.out.println("Q and A MAP:   " +curQuestionPage);
 		for (final Entry<Question, Answer> entry : curQuestionAnswerMap.entrySet()) {
+			System.out.println("this is what we waaaant: " + entry.getKey());
+			System.out.println("this isss what she wantsssss: " + entry.getValue());
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
 
 		final int nextPageid = curQuestionPage.getPageNextID();
-		if (this.beginnerQuestions.hasMorePages() && nextPageid > -1) {
+//		System.out.println(this.beginnerQuestions + "  please show the fuck up");
+		
+		if (nextPageid > -1 && this.beginnerQuestions.hasMorePages()) {
 			final BeginnerTaskQuestionPage questionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getPageByID(nextPageid), this.beginnerQuestions.getTask(), null);
 			addPage(questionPage);
 			return questionPage;
@@ -142,11 +147,10 @@ public class AltConfigWizard extends Wizard {
 			CodeGenerators generator = selectedTask.getCodeGen();
 			if (generator == CodeGenerators.CrySL) {
 				System.out.println("here is th TASK: " + selectedTask.getName());
-				String selectedTemplate = selectedTask.getCodeTemplate();
-				for (Answer resp : this.constraints.values()) {
-					selectedTemplate += resp.getOption();
-				}
+				String selectedTemplate = constructTemplateName();
+				System.out.println("SELECTED TEMPLATE---- ----------" + selectedTemplate);
 				selectedTask.setCodeTemplate(selectedTemplate);
+				
 				return addLocatorPage();
 			} else if (generator == CodeGenerators.XSL) {
 				final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
@@ -164,10 +168,27 @@ public class AltConfigWizard extends Wizard {
 		return currentPage;
 	}
 
+	public  String constructTemplateName() {
+		String selectedTemplate = selectedTask.getCodeTemplate();
+		System.out.println("SELECTED TEMPLATE---- ----------" + selectedTemplate);
+		for (Answer resp : this.constraints.values()) {
+			System.out.println("SEE THE ANSWERS: " + resp.getOption());
+			selectedTemplate += resp.getOption();
+		}
+		return selectedTemplate;
+	}
+	
+	public void setSelectedTask(Task selectedTask) {
+		this.selectedTask = selectedTask;
+	}
+
 	private IWizardPage addLocatorPage() {
 		final LocatorPage locatorPage = new LocatorPage("Locator");
 		addPage(locatorPage);
 		return locatorPage;
+	}
+	public String getSelectedTemplate() {
+		return this.selectedTask.getCodeTemplate();
 	}
 
 	/**
