@@ -110,7 +110,6 @@ public class AltConfigWizard extends Wizard {
 		}
 		if (currentPage instanceof TaskSelectionPage) {
 			selectedTask = ((TaskSelectionPage) currentPage).getSelectedTask();
-			System.out.println("JSON FILe: " + selectedTask.getQuestionsJSONFile());
 			this.beginnerQuestions = new BeginnerModeQuestionnaire(selectedTask, selectedTask.getQuestionsJSONFile());
 			
 			// It is possible that now questions are within a BeginnerModeQuestionnaire
@@ -125,33 +124,26 @@ public class AltConfigWizard extends Wizard {
 		}
 
 		//Only case that is left: BeginnerTaskQuestionPage
-		System.out.println("thS IS THE CURR PAGE in nextPage: " + currentPage.getName());
 		final BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 		final HashMap<Question, Answer> curQuestionAnswerMap = curQuestionPage.getMap();
-		System.out.println("Q and A MAP:   " +curQuestionPage);
 		for (final Entry<Question, Answer> entry : curQuestionAnswerMap.entrySet()) {
-			System.out.println("this is what we waaaant: " + entry.getKey());
-			System.out.println("this isss what she wantsssss: " + entry.getValue());
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
 
 		final int nextPageid = curQuestionPage.getPageNextID();
-//		System.out.println(this.beginnerQuestions + "  please show the fuck up");
 		
 		if (nextPageid > -1 && this.beginnerQuestions.hasMorePages()) {
 			final BeginnerTaskQuestionPage questionPage = new BeginnerTaskQuestionPage(this.beginnerQuestions.getPageByID(nextPageid), this.beginnerQuestions.getTask(), null);
 			addPage(questionPage);
 			return questionPage;
 		} else {
-			System.out.println("NO TASK LEFT---- ----------");
 			CodeGenerators generator = selectedTask.getCodeGen();
 			if (generator == CodeGenerators.CrySL) {
-				System.out.println("here is th TASK: " + selectedTask.getName());
 				String selectedTemplate = constructTemplateName();
-				System.out.println("SELECTED TEMPLATE---- ----------" + selectedTemplate);
 				selectedTask.setCodeTemplate(selectedTemplate);
 				
 				return addLocatorPage();
+				
 			} else if (generator == CodeGenerators.XSL) {
 				final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 					.getAbsolutePath(), "c0_" + selectedTask.getName(), selectedTask.getDescription());
@@ -170,12 +162,13 @@ public class AltConfigWizard extends Wizard {
 
 	public  String constructTemplateName() {
 		String selectedTemplate = selectedTask.getCodeTemplate();
-		System.out.println("SELECTED TEMPLATE---- ----------" + selectedTemplate);
 		for (Answer resp : this.constraints.values()) {
-			System.out.println("SEE THE ANSWERS: " + resp.getOption());
 			selectedTemplate += resp.getOption();
 		}
 		return selectedTemplate;
+	}
+	public void constructConstraints(HashMap constraint) {
+			this.constraints.putAll(constraint);
 	}
 	
 	public void setSelectedTask(Task selectedTask) {
@@ -258,7 +251,6 @@ public class AltConfigWizard extends Wizard {
 			switch (genKind) {
 				case CrySL:
 					CrySLBasedCodeGenerator.clearParameterCache();
-					System.out.println("is the template CORRECT: " + selectedTask.getName());
 					File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
 					codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject()
@@ -281,7 +273,6 @@ public class AltConfigWizard extends Wizard {
 					break;
 				case XSL:
 					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
-//					System.out.println("is the template CORRECT XSL: " + selectedTask.getModelFile());
 					final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
 						.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
 					instanceGenerator.generateInstances(this.constraints);
