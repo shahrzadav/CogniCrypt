@@ -21,7 +21,7 @@ import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.utils.DeveloperProject;
 
 public class DigitalSigniture {
-	Logger log = Logger.getLogger(GenerationTest.class.getName());
+	Logger log = Logger.getLogger(DigitalSigniture.class.getName());
 	IJavaProject testJavaProject;
 	CodeGenerator generatorDigSigniture;
 	Task digSignitureTask;

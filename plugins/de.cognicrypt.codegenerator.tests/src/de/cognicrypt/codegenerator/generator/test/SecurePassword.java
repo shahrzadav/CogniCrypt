@@ -22,7 +22,7 @@ import de.cognicrypt.utils.DeveloperProject;
 
 public class SecurePassword {
 	
-	Logger log = Logger.getLogger(GenerationTest.class.getName());
+	Logger log = Logger.getLogger(SecurePassword.class.getName());
 	IJavaProject testJavaProject;
 	CodeGenerator generatorSecPassword;
 	Task secPasswordTask;
