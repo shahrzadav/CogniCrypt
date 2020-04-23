@@ -41,9 +41,11 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -126,6 +128,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		if (chosenConfig instanceof CrySLConfiguration) {
 			ruleClass = ((CrySLConfiguration) chosenConfig).getTemplateClass();
 		}
+//		System.out.println("ruleClasssssssssssssssssss" + ruleClass);
 		ruleClass.setPackageName(Constants.PackageNameAsName);
 		ruleClass.setModifier("public");
 
@@ -150,7 +153,10 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		templateClass.setClassName("Output");
 		templateClass.setModifier("public");
 		GeneratorMethod tmplUsage = new GeneratorMethod();
+
+//		System.out.println("befoooooooooooooooooooore" + templateClass);
 		templateClass.addMethod(tmplUsage);
+//		System.out.println("afteeeeeeeeeeeeeeeeeerrrr" + templateClass);
 		tmplUsage.setModifier("public");
 		tmplUsage.setReturnType("void");
 		tmplUsage.setName(Constants.NameOfTemporaryMethod);
@@ -1351,6 +1357,19 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				}
 				return super.visit(node);
 			}
+			
+//			@Override
+//			public boolean visit(Javadoc node) {
+////				templateClass.addJavaDOC(node.toString());
+//				return super.visit(node);
+//				
+//			}
+//			public void visit(Comment node) {
+//				System.out.println("comments:00000000000000000" + node);
+////				templateClass.addJavaDOC(node.toString());
+////				return;
+//				
+//			}
 
 		};
 		cu.accept(astVisitor);
