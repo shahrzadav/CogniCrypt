@@ -46,6 +46,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.LineComment;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -316,6 +317,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					ArrayList<String> imports = new ArrayList<String>(determineImports(currentTransitions));
 					imports.addAll(Arrays.asList(Constants.xmlimportsarr));
 					ruleClass.addImports(imports);
+					
+					//add all javaDocs
+					
 
 					Map<CrySLPredicate, Entry<CrySLRule, CrySLRule>> mayUsePreds = new HashMap<>();
 					for (Entry<CrySLPredicate, Entry<CrySLRule, CrySLRule>> entry : predicateConnections) {
@@ -1203,6 +1207,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	}
 
 	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) {
+		
 		ASTParser parser = ASTParser.newParser(AST.JLS11);
 		parser.setSource((ICompilationUnit) JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile)));
 		parser.setResolveBindings(true);
@@ -1212,23 +1217,25 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		final Map<Integer, Integer> methLims = new HashMap<>();
 
 		GeneratorClass templateClass = new GeneratorClass();
-
+	
+		System.out.println("cccccuuuuuuuuuuuuuuuuuuuuu" + cu.getCommentList());
+//		cu.getCommentList();
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 
+			
 			GeneratorMethod curMethod = null;
 			CrySLObject retObj = null;
 			List<CodeGenCrySLObject> pars = new ArrayList<>();
 			Map<SimpleName, CrySLObject> preCGVars = new HashMap<SimpleName, CrySLObject>();
 			Map<SimpleName, CrySLObject> postCGVars = new HashMap<SimpleName, CrySLObject>();
-			
 			List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
-
+			
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public boolean visit(MethodInvocation node) {
+				
 				MethodInvocation mi = node;
 				String calledMethodName = mi.getName().getFullyQualifiedName();
-
 				List arguments = mi.arguments();
 				if ("addReturnObject".equals(calledMethodName)) {
 					for (SimpleName var : preCGVars.keySet()) {
@@ -1320,8 +1327,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				curMethod.setName(node.getName().getFullyQualifiedName());
 				curMethod.setReturnType(node.getReturnType2().toString());
 				curMethod.setModifier("public");
-
 				for (Statement s : (List<Statement>) node.getBody().statements()) {
+//					System.out.println("statement inside method00000000: "+ s);
+					
 					curMethod.addStatementToBody(s.toString());
 				}
 
@@ -1358,21 +1366,26 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				return super.visit(node);
 			}
 			
-//			@Override
-//			public boolean visit(Javadoc node) {
-////				templateClass.addJavaDOC(node.toString());
-//				return super.visit(node);
-//				
-//			}
+			@Override
+			public boolean visit(Javadoc node) {
+//				System.out.println("jvaDoc:00000000000000000" + node.toString());
+				templateClass.addJavaDOC(node.toString());
+				return super.visit(node);
+				
+			}
 //			public void visit(Comment node) {
-//				System.out.println("comments:00000000000000000" + node);
-////				templateClass.addJavaDOC(node.toString());
-////				return;
-//				
+//				System.out.println("gozoooooooooooooo" + node.toString());
+//			}
+//			public boolean visit(LineComment node) {
+//				int start = node.getStartPosition();
+//				int end = start + node.getLength();
+//				System.out.println("gozoooooooooooooo2" + node.toString());
+//				return super.visit(node);
 //			}
 
 		};
 		cu.accept(astVisitor);
+//		System.out.println("template class after node visiiiiiiiit: " + templateClass);
 		return templateClass;
 	}
 

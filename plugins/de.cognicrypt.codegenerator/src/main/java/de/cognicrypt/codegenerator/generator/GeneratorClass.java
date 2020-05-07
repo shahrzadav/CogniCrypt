@@ -23,12 +23,14 @@ public class GeneratorClass {
 	private Set<String> imports;
 	private String modifier;
 	private String className;
+	private Set<String> javaDOC;
 	private List<GeneratorMethod> methods;
 	private File associatedFile;
 
 	public GeneratorClass() {
 		imports = new HashSet<String>();
 		methods = new ArrayList<GeneratorMethod>();
+		javaDOC = new HashSet<String>();
 	}
 
 	@Override
@@ -56,6 +58,12 @@ public class GeneratorClass {
 
 	public void addImports(List<String> imports) {
 		this.imports.addAll(imports);
+	}
+//	public void addJavaDOCs(List<String> javaDOCs) {
+//		this.javaDOC.addAll(javaDOCs);
+//	}
+	public void addJavaDOC(String jDOC) {
+		javaDOC.add(jDOC);
 	}
 
 	public String getPackageName() {
@@ -85,6 +93,9 @@ public class GeneratorClass {
 	public Set<String> getImports() {
 		return imports;
 	}
+	public Set<String> getJavaDocs() {
+		return javaDOC;
+	}
 
 	public List<GeneratorMethod> getMethods() {
 		return methods;
@@ -104,6 +115,8 @@ public class GeneratorClass {
 
 	public String toString() {
 		StringBuilder classContent = new StringBuilder("package ");
+
+		classContent.append(javaDOC);
 		classContent.append(packageName);
 		classContent.append(";\n");
 		for (String impo : imports) {
