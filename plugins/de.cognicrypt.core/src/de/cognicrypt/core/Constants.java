@@ -7,6 +7,7 @@
 
 package de.cognicrypt.core;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -186,8 +187,14 @@ public class Constants {
 	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
 	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
-
+	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
+	
+	public static final String ERROR_CANNOT_FIND_NODE = "The requested node could not be found";
+	public static final String ERROR_CANNOT_FILE_TO_BYTEARRAY = "Error occured when passing a Java file into a byte array.";
+	public static final String ERROR_CANNOT_CREATE_TEST_CODE_GEN = "Error occured when generating code for testing purposes.";
+	public static final String ERROR_CANNOT_PRINT_SRC_CODE = "An error occured when printing source code.";
 	public static final String NOT_JAVA_PROJECT = "The nature of the project is not Java";
+	public static final String NOT_HAVE_NATURE = "The nature of the project does not exist or the project is not open";
 
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";
@@ -300,8 +307,10 @@ public class Constants {
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library";
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE = "Location of the Help file";
 	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "Location of the Clafer file";
+	public static final String WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE = "Location of the Crysl Template file";
 	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "Location of the XSL file";
 	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Location of the JSON file";
+	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Location of the PNG file";
 	public static final String WIDGET_DATA_LOCATION_OF_HELP_FILE = "Location of the Help file";
 	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
@@ -464,11 +473,14 @@ public class Constants {
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
 	public static final String CFR_BIN_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModelBin" + innerFileSeparator;
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
+	public static final String IMAGE_FILE_DIRECTORY_PATH = rsrcPath + "images" + innerFileSeparator;
 	public static final String XML_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String pluginXmlFile = "plugin.xml";
 	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
 	public static final String HELP_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String CFR_EXTENSION = ".cfr";
+	public static final String JAVA_EXTENSION = ".java";
+	public static final String PNG_EXTENSION = ".png";
 	public static final String CFR_BIN_EXTENSION = ".dat";
 	public static final String JS_EXTENSION = ".js";
 	public static final String JAR_EXTENSION = ".jar";
@@ -574,7 +586,7 @@ public class Constants {
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
 	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
-	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
+	public final static String ECLIPSE_RULES_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_RULES_DIR;
 	public static final String cryslFileEnding = ".crysl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";

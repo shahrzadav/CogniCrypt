@@ -33,7 +33,7 @@ public class DeveloperProject {
 	/**
 	 * Application project
 	 */
-	private final IProject project;
+	public final IProject project;
 
 	public DeveloperProject(final IProject developerProject) {
 		this.project = developerProject;
@@ -179,7 +179,7 @@ public class DeveloperProject {
 			return true;
 		}
 		catch (final CoreException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_REMOVE_PACKAGE);
 		}
 		return false;
 	}
@@ -192,9 +192,8 @@ public class DeveloperProject {
 	public boolean isMavenProject() {
 		try {
 			return this.project.hasNature(Constants.MavenNatureID);
-		}
-		catch (CoreException e) {
-			Activator.getDefault().logError(e);
+		}	catch (CoreException e) {
+			Activator.getDefault().logError(e, Constants.NOT_HAVE_NATURE);
 		}
 		return false;
 	}

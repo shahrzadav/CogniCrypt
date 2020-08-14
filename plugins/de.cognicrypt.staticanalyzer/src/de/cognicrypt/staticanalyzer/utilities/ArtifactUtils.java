@@ -148,7 +148,7 @@ public class ArtifactUtils {
 			DefaultArtifactVersion min = new DefaultArtifactVersion(minVersion.toString());
 			DefaultArtifactVersion cur = new DefaultArtifactVersion(version);
 			if (cur.compareTo(min) >= 0) {
-				downloadRulesetArtifact(groupId[0], artifactId[0], version, new File(System.getProperty("user.dir")));
+				downloadRulesetArtifact(groupId[0], artifactId[0], version, new File(Constants.ECLIPSE_RULES_DIR));
 			}
 		}
 	}
@@ -185,7 +185,7 @@ public class ArtifactUtils {
 					zipFile.extractAll(artifactPath + File.separator + version);
 				}
 				catch (ZipException e) {
-					Activator.getDefault().logError(e);
+					Activator.getDefault().logError(e, "Error occured when extracting zip file.");
 				}
 				Files.delete(Paths.get(artifactPath + File.separator + downloadedZipFilename));
 				new File(artifactPath + File.separator + artifactId).renameTo(new File(artifactPath + File.separator + version));
