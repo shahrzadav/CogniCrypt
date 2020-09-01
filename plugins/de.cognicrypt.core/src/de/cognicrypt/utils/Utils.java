@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
 import org.eclipse.core.resources.IContainer;
@@ -49,7 +50,7 @@ import de.cognicrypt.core.Constants;
 public class Utils {
 
 	static IWorkbenchWindow window = null;
-
+	private final static List<String> primitiveTypes = Arrays.asList( new String[]{"byte", "AnyType", "void", "int", "boolean", "short", "double", "long", "float"});
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
 	 *
@@ -291,13 +292,18 @@ public class Utils {
 		boolean subTypes = typeOne.equals(typeTwo);
 		subTypes |= ("byte".equals(typeOne) && (typeOne + "[]").equals(typeTwo));
 		if (!subTypes) {
+			if (primitiveTypes.contains(typeOne) || primitiveTypes.contains(typeTwo) || "null".equals(typeOne) || "null".equals(typeTwo)) {
+				return false;
+			}
+			if (typeOne.contains("[") || typeTwo.contains("[")){
+				return false;
+			}
 			try {
 				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));
 			}
-			catch (ClassNotFoundException e) {
-				Activator.getDefault().logError(e);
-			}
+			catch (ClassNotFoundException e) {}
 		}
 		return subTypes;
 	}
+
 }
