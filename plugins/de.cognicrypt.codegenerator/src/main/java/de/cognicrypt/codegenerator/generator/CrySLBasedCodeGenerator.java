@@ -1155,6 +1155,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	 * @throws ClassNotFoundException
 	 */
 	private void determineThrownExceptions(String className, String methodName, Class<?>[] methodParameters, List<String> imports) throws NoSuchMethodException, SecurityException, ClassNotFoundException {
+		System.out.println(className + methodName);
 		List<Class<?>> exceptionClasses = new ArrayList<Class<?>>();
 		Method[] methods = java.lang.Class.forName(className).getMethods();
 		for (Method meth : methods) {
@@ -1223,6 +1224,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		GeneratorClass templateClass = new GeneratorClass();
 
+		List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project);
+		
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 
 			GeneratorMethod curMethod = null;
@@ -1256,11 +1259,10 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					}
 				} else if ("includeClass".equals(calledMethodName)) {
 					String rule = Utils.filterQuotes(arguments.get(0).toString());
-					List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project);
-					String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
 					CrySLRule crySLRule = null;//CrySLUtils.getCrySLRule(simpleRuleName);
+					
 					for (CrySLRule crySLRuleFromSootRunner : rulesFromSootRunner) {
-						if(crySLRuleFromSootRunner.getClassName().contains(simpleRuleName)) {
+						if(crySLRuleFromSootRunner.getClassName().equals(rule)) {
 							crySLRule = crySLRuleFromSootRunner;
 						}
 					}
