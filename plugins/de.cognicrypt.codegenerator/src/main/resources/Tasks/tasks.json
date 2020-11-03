@@ -39,6 +39,15 @@
     "codeGen": "XSL",
     "isSelected": false
   },
+    {
+    "name": "UserAuthentication",
+    "description": "Generates secure username and password",
+    "taskDescription": "Cognicrypt provides a secure username and password and verifies the validity of a given username and password in this usecase. ",
+    "image": "login",
+    "codeGen": "CrySL",
+    "isSelected": false
+  },
+  
   {
     "name": "TestCryslTask",
     "description": "TestCryslTask",
