@@ -1,1 +1,19 @@
-[]
+[{
+  "id": "0",
+  "content": [{
+      "id": "0",
+      "element": "radio",
+      "questionText": "Do you take the BLUE pill or RED?",
+      "answers": [ {
+          "value": "BLUE(PASS GEN)",
+          "option": "passgen",
+          "defaultAnswer": true
+        },
+        {
+          "value": "RED(USER AUTHENTICATION)",
+           "option": "auth",
+           "nextID": "-1"
+        }]
+     }],
+    "nextID": "-1"
+  }]

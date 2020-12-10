@@ -7,14 +7,14 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-package de.cognicrypt.codegenerator.crysl.templates.userauthentication;
+package de.cognicrypt.codegenerator.crysl.templates.userauthenticationpassgen;
 
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
-public class UserAuthentication {
+public class PasswordGenerator {
 
 	// password will atleast be 4 letters
 	public static String generateRandomPassword(int length) throws NoSuchAlgorithmException, GeneralSecurityException
