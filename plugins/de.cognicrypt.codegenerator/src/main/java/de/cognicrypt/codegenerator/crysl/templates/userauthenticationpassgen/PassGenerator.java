@@ -9,13 +9,22 @@
  ********************************************************************************/
 package de.cognicrypt.codegenerator.crysl.templates.userauthenticationpassgen;
 
-import org.passay.*;
+import org.passay.CharacterRule;
+import org.passay.CharacterData;
+import org.passay.EnglishCharacterData;
+import org.passay.PasswordGenerator;
+
+import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
+
+//import org.passay.*;
 public class PassGenerator {
 
 	protected static final String ERROR_CODE = null;
 
 	public static String generatePassayPassword() {
+		int length = 8;
 	    PasswordGenerator gen = new PasswordGenerator();
+	    
 	    
 	    CharacterData lowerCaseChars = EnglishCharacterData.LowerCase;
 	    CharacterRule lowerCaseRule = new CharacterRule(lowerCaseChars);
@@ -40,15 +49,25 @@ public class PassGenerator {
 	    };
 	    CharacterRule splCharRule = new CharacterRule(specialChars);
 	    splCharRule.setNumberOfCharacters(2);
-
-	    String password = gen.generatePassword(8, splCharRule, lowerCaseRule, 
-	      upperCaseRule, digitRule);
+	    CharacterRule m = generateRule(lowerCaseChars, 2);
+	    String res = null;
+	    CrySLCodeGenerator.getInstance().includeClass("org.passay.PasswordGenerator").addParameter(length, "len").addParameter(m, "rules").addParameter(res, "res").generate();
+	    
+	    String password = gen.generatePassword(8, generateRule(lowerCaseChars, 2),
+	    	generateRule(upperCaseChars, 2),
+	    	generateRule(specialChars, 2),
+	    	generateRule(digitChars, 2));
 	    return password;
 	}
 
 	public static void main (String[] args) {
 		String securePass = generatePassayPassword();
 		System.out.println("the result: " + securePass);
+	}
+	public static CharacterRule generateRule(CharacterData characters, int amount) {
+		CharacterRule charRule = new CharacterRule(characters);
+		charRule.setNumberOfCharacters(amount);
+		return charRule;
 	}
 
 }
