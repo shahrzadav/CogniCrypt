@@ -38,6 +38,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/claferchocoig.jar"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-8.0.22.jar"/>
+	<classpathentry kind="lib" path="lib/passay-1.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-8.0.23.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
