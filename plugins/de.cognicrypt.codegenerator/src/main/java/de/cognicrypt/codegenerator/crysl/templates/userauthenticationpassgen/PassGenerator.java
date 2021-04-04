@@ -7,51 +7,73 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-
 package de.cognicrypt.codegenerator.crysl.templates.userauthenticationpassgen;
+
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class PassGenerator, generates a secure password.
+ * The Class PassGenerator generates a secure password that meets all requirements
+ *  for a standard password described in NIST (National Institute of Standards and Technology).
  */
+
 public class PassGenerator {
-	
+
 	/**
-	 * Generates a password using Passay library with 8 characters. It involves
-	 * 2 of each set of characters, capital case letters, lower case letters,
-	 * digits and special characters, which are distributed randomly in the password.
+	 * Generates a secure random password of length 12. This password consists of numbers, symbols, uppercase and lowercase 
+	 * letters that are randomly distributed in the password. The length of the password must be equal to or more than 4, cause it must include
+	 * one of each set of characters.
 	 *
 	 * @return the password.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecureRandomSpi implementation for the specified algorithm. {@link #generateRandomCharacter(String) generateRandomCharacter}
 	 */
-	public static String generatePassayPassword() {
-		int length = 8;
-	   
-	  org.passay.CharacterData lowerCaseChars = org.passay.EnglishCharacterData.LowerCase;  
-	  org.passay.CharacterData upperCaseChars = org.passay.EnglishCharacterData.UpperCase;	   
-	  org.passay.CharacterData digitChars = org.passay.EnglishCharacterData.Digit;
-	  org.passay.CharacterData specialChars = org.passay.EnglishCharacterData.Special;
-	  
-	  
-	  org.passay.CharacterRule[] rules = {generateRule(lowerCaseChars, 2),generateRule(upperCaseChars, 2),
-			  generateRule(specialChars, 2), generateRule(digitChars, 2)};
-	  String res = null;
-	  
-	  CrySLCodeGenerator.getInstance().includeClass("org.passay.PasswordGenerator").addParameter(length, "len").addParameter(rules, "rules").addParameter(res, "res").generate();
+	public static String generateRandomPassword() throws NoSuchAlgorithmException, GeneralSecurityException
+	{
+		int length = 12;
+		final String capitalAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		final String smallAlphabet = "abcdefghijklmnopqrstuvwxyz";
+		final String numbers = "0123456789";
+		//removed dot slashes and quotations- library 
+		final String specialChars = "~!@#$%^&*()-_=+[{]};:,<>?";
+		final String allCases = capitalAlphabet + smallAlphabet + numbers + specialChars;
 
-	  return res;
+		List<String> password = new ArrayList<String>();
+
+		password.add(generateRandomCharacter(capitalAlphabet));
+		password.add(generateRandomCharacter(smallAlphabet));
+		password.add(generateRandomCharacter(numbers));
+		password.add(generateRandomCharacter(specialChars));
+
+		for (int i = 4; i < length; i++) {
+			password.add(generateRandomCharacter(allCases));
+		}
+		// relocate each character in password
+		Collections.shuffle(password);
+		return String.join("", password);
 	}
-
+	
 	/**
-	 * Defines a set of character and a number of that character in the password.
+	 * Generates a random integer (randIndex) in range of length of characters (e.g. 10 in numbers)
+	 * and returns the randIndex'th item of the list of characters.
 	 *
-	 * @param characters the characters, digits, letters, etc.
-	 * @param amount the amount of those characters in the password.
-	 * @return the character rule.
+	 * @param chars the character, e.g., upper case letters.
+	 * @return the string one character from the character set that is randomly selected.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecureRandomSpi implementation for the specified algorithm.
 	 */
-	public static org.passay.CharacterRule generateRule(org.passay.CharacterData characters, int amount) {
-		org.passay.CharacterRule charRule = new org.passay.CharacterRule(characters);
-		charRule.setNumberOfCharacters(amount);
-		return charRule;
+	public static String generateRandomCharacter(String chars) throws NoSuchAlgorithmException, GeneralSecurityException{
+
+		int length = chars.length();
+		int randIndex = 0;
+		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(length, "len").addParameter(randIndex, "randIntLen").setCustomMain("generateRandomPassword").generate();
+		return String.valueOf(chars.charAt(randIndex));
 	}
+
 }
