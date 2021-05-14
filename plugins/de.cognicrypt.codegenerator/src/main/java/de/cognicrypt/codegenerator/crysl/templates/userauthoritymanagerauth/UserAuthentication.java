@@ -7,7 +7,7 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-package de.cognicrypt.codegenerator.crysl.templates.userauthenticationauth;
+package de.cognicrypt.codegenerator.crysl.templates.userauthoritymanagerauth;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

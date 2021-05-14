@@ -7,7 +7,7 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-package de.cognicrypt.codegenerator.crysl.templates.userauthenticationpassgen;
+package de.cognicrypt.codegenerator.crysl.templates.userauthoritymanagerpassgen;
 
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -72,7 +72,7 @@ public class PassGenerator {
 
 		int length = chars.length();
 		int randIndex = 0;
-		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(length, "len").addParameter(randIndex, "randIntLen").setCustomMain("generateRandomPassword").generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(length, "range").addParameter(randIndex, "randIntInRange").setCustomMain("generateRandomPassword").generate();
 		return String.valueOf(chars.charAt(randIndex));
 	}
 

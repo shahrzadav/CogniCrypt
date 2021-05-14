@@ -3,14 +3,14 @@
   "content": [{
       "id": "0",
       "element": "radio",
-      "questionText": "Do you take the BLUE pill or RED?",
+      "questionText": "Which of the following tasks do you wish to generate?",
       "answers": [ {
-          "value": "BLUE(PASS GEN)",
+          "value": "A secure random password generator",
           "option": "passgen",
           "defaultAnswer": true
         },
         {
-          "value": "RED(USER AUTHENTICATION)",
+          "value": "User Authentication service that checks user's username and password from SQL database",
            "option": "auth",
            "nextID": "-1"
         }]
