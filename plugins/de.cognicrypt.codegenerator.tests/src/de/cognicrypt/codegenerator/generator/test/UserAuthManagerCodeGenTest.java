@@ -25,6 +25,9 @@ import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.utils.DeveloperProject;
 
+/**
+ * @author Shahrzad Asghari
+ */
 public class UserAuthManagerCodeGenTest {
 	private Logger log = Logger.getLogger(UserAuthManagerCodeGenTest.class.getName());
 	private IJavaProject testJavaProject;
@@ -33,6 +36,7 @@ public class UserAuthManagerCodeGenTest {
 	private Configuration configAuthManager;
 	private DeveloperProject developerProject;
 	private IResource targetFile;
+	private ICompilationUnit testClassUnit;
 	
 	@After
 	public void tearDown() throws CoreException {
@@ -47,14 +51,22 @@ public class UserAuthManagerCodeGenTest {
 		this.authManagerTask = TestUtils.getTask("UserAuthorityManager");
 		this.generatorAuthManager = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorAuthManager.getDeveloperProject();
+		this.testClassUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PACKAGE_NAME,
+				Constants.JAVA_CLASS_NAME);
+		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", this.testClassUnit);
 		
 	}
 	
+	/**
+	 * Scenario: User chooses User Authentication manager task and on the first pages
+	 * chooses the second answer to generate user authentication service.
+	 *
+	 * @throws CoreException.
+	 * @throws IOException this exception happens if an I/O error appears while creating and copying a file in createCrySLConfiguration.
+	 * @throws CoreException this exceptions happens when the project does not exist or is not open.
+	 */
 	@Test
-	public void testCodeGenerationUserAuthentication() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject,
-				Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
-		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
+	public void testCodeGenerationUserAuthentication() throws IOException, CoreException {
 		this.configAuthManager = TestUtils.createCrySLConfiguration("userauthoritymanagerauth", testClassUnit.getResource(),
 				generatorAuthManager, this.developerProject);
 		final boolean encCheck = this.generatorAuthManager.generateCodeTemplates(this.configAuthManager,
@@ -62,12 +74,16 @@ public class UserAuthManagerCodeGenTest {
 		
 		assertTrue(encCheck);
 	}
+	
+	/**
+	 * Scenario: User chooses User Authentication manager task and on the first pages
+	 * chooses the first answer to generate a password generator service.
+	 *
+	 * @throws CoreException this exceptions happens when the project does not exist or is not open.
+	 * @throws IOException this exception happens if an I/O error appears while creating and copying a file in createCrySLConfiguration.
+	 */
 	@Test
 	public void testCodeGenerationPassGenerator() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject,
-				Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
-		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
-
 		this.configAuthManager = TestUtils.createCrySLConfiguration("userauthoritymanagerpassgen", testClassUnit.getResource(),
 				generatorAuthManager, this.developerProject);
 		final boolean encCheck = this.generatorAuthManager.generateCodeTemplates(this.configAuthManager,

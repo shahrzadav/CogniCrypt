@@ -28,6 +28,7 @@ public class UserAuthentication {
 	 * with the same salt, then checks the equality of the hash in the database and the new hash. If the username does not 
 	 * exist in the database, it throws an exception. Users may modify the database's username, password, URL and tableName to their own.
 	 * Usernames and Passwords are all considered to be unique.
+	 * note: SQL must be installed.
 	 *
 	 * @param username the input username to be searched in the database.
 	 * @param pwd the input password for that username, the correction of this password will be checked by this method.
